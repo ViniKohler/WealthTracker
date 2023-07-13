@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        binding.name.setText(preferenceManager.getString(Constants.KEY_NAME););
+        binding.name.setText(preferenceManager.getString(Constants.KEY_NAME));
     }
 
     @Override
