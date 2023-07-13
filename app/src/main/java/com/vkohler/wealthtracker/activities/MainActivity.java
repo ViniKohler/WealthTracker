@@ -2,17 +2,12 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.vkohler.wealthtracker.databinding.ActivityMainBinding;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
-
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         setContentView(binding.getRoot());
         setListeners();
+        init();
     }
 
     private void setListeners() {
@@ -34,5 +30,18 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), SignInActivity.class));
             finish();
         });
+        binding.name.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), MyProfileActivity.class));
+        });
+    }
+
+    private void init() {
+        binding.name.setText(preferenceManager.getString(Constants.KEY_NAME););
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        init();
     }
 }

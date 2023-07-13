@@ -13,7 +13,6 @@ import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -58,20 +57,22 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUp() {
         loading(true);
+        binding.status.setText("Creating user...");
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
         user.put(Constants.KEY_USERNAME, binding.username.getText().toString());
         user.put(Constants.KEY_PASSWORD, binding.password.getText().toString());
-        binding.status.setText("Creating user...");
+        user.put(Constants.KEY_NAME, binding.name.getText().toString());
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .add(user)
                 .addOnSuccessListener(userReference -> {
+                    binding.status.setText("Creating wallet...");
                     preferenceManager.putString(Constants.KEY_USER_ID, userReference.getId());
                     preferenceManager.putString(Constants.KEY_USERNAME, binding.username.getText().toString());
-                    binding.status.setText("Creating wallet...");
+                    preferenceManager.putString(Constants.KEY_NAME, binding.name.getText().toString());
+                    preferenceManager.putString(Constants.KEY_PASSWORD, binding.password.getText().toString());
                     HashMap<String, Object> wallet = new HashMap<>();
-                    String userId = preferenceManager.getString(Constants.KEY_USER_ID);
-                    wallet.put(Constants.KEY_USER_ID, userId);
+                    wallet.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
                     wallet.put(Constants.KEY_BALANCE, "0.00");
                     database.collection(Constants.KEY_COLLECTION_WALLETS)
                             .add(wallet)
