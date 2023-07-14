@@ -2,6 +2,7 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MyProfileActivity extends AppCompatActivity {
 
@@ -63,19 +65,35 @@ public class MyProfileActivity extends AppCompatActivity {
                 isPasswordHidden = true;
             }
             binding.passwordHint.setVisibility(View.GONE);
-            preferenceManager.putString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL, "1");
             binding.passwordText.setText("password");
         });
-        binding.back.setOnClickListener(v -> onBackPressed());
         binding.edit.setOnClickListener(v -> {
             binding.editPanel.setVisibility(View.VISIBLE);
             binding.edit.setVisibility(View.GONE);
+            binding.delete.setVisibility(View.GONE);
         });
         binding.update.setOnClickListener(v -> {
             updateUser();
+        });
+        binding.cancelUpdate.setOnClickListener(v -> {
             binding.editPanel.setVisibility(View.GONE);
             binding.edit.setVisibility(View.VISIBLE);
+            binding.delete.setVisibility(View.VISIBLE);
         });
+        binding.delete.setOnClickListener(v -> {
+            binding.deletePanel.setVisibility(View.VISIBLE);
+            binding.edit.setVisibility(View.GONE);
+            binding.delete.setVisibility(View.GONE);
+        });
+        binding.deleteUser.setOnClickListener(v -> {
+            deleteUser();
+        });
+        binding.cancelDelete.setOnClickListener(v -> {
+            binding.deletePanel.setVisibility(View.GONE);
+            binding.edit.setVisibility(View.VISIBLE);
+            binding.delete.setVisibility(View.VISIBLE);
+        });
+        binding.back.setOnClickListener(v -> onBackPressed());
     }
 
     private void updateUser() {
@@ -91,6 +109,11 @@ public class MyProfileActivity extends AppCompatActivity {
         String newUsername = binding.newUsername.getText().toString();
         String newName = binding.newName.getText().toString();
         String newPassword = binding.newPassword.getText().toString();
+
+        if (currentUsername.equals(newUsername) &&
+                currentName.equals(newName) && currentPassword.equals(newPassword)) {
+            showToast("Nothing to update");
+        }
 
         if (!currentUsername.equals(newUsername)) {
             userReference.update(Constants.KEY_USERNAME, newUsername)
@@ -126,6 +149,35 @@ public class MyProfileActivity extends AppCompatActivity {
                         showToast(e.getMessage());
                     });
         }
+
+        binding.editPanel.setVisibility(View.GONE);
+        binding.edit.setVisibility(View.VISIBLE);
+        binding.delete.setVisibility(View.VISIBLE);
+    }
+
+    private void deleteUser() {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        DocumentReference walletReference = database.collection(Constants.KEY_COLLECTION_WALLETS)
+                .document(preferenceManager.getString(Constants.KEY_WALLET_ID));
+        walletReference.delete()
+                .addOnSuccessListener(v -> {
+                    DocumentReference userReference = database.collection(Constants.KEY_COLLECTION_USERS)
+                            .document(preferenceManager.getString(Constants.KEY_USER_ID));
+                    userReference.delete()
+                            .addOnSuccessListener(task -> {
+                                preferenceManager.clear();
+                                startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+                                finish();
+                                showToast("User deleted successfully");
+                            })
+                            .addOnFailureListener(e -> {
+                                showToast(e.getMessage());
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    showToast(e.getMessage());
+                });
     }
 
     private void showToast(String m) {

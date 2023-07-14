@@ -107,12 +107,84 @@
         android:layout_width="40dp"
         android:layout_height="45dp"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="7dp"
         android:backgroundTint="@color/background_dark"
         android:drawableBottom="@drawable/ic_edit"
         android:drawableTint="@color/text_primary"
+        app:layout_constraintEnd_toStartOf="@id/delete"
+        app:layout_constraintTop_toTopOf="@id/userDataContainer" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/delete"
+        android:layout_width="40dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="7dp"
+        android:backgroundTint="@color/red"
+        android:drawableBottom="@drawable/ic_delete"
+        android:drawableTint="@color/text_primary"
         app:layout_constraintEnd_toEndOf="@id/userDataContainer"
         app:layout_constraintTop_toTopOf="@id/userDataContainer" />
+
+    <LinearLayout
+        android:id="@+id/deletePanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_transparent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:background="@color/background_light"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center_horizontal"
+                android:text="Delete your account?"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="20dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/deleteUser"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/red"
+                    android:text="Delete"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="0dp" />
+
+                <Button
+                    android:id="@+id/cancelDelete"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/background_dark"
+                    android:text="Cancel"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/editPanel"
@@ -184,14 +256,33 @@
                 android:layout_width="0dp"
                 android:layout_height="20dp" />
 
-            <Button
-                android:id="@+id/update"
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:backgroundTint="@color/green"
-                android:text="Update"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/update"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/green"
+                    android:text="Update"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="0dp" />
+
+                <Button
+                    android:id="@+id/cancelUpdate"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/background_dark"
+                    android:text="Cancel"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

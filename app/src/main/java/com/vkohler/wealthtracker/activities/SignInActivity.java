@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.vkohler.wealthtracker.databinding.ActivitySignInBinding;
@@ -53,13 +54,20 @@ public class SignInActivity extends AppCompatActivity {
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
-                .whereEqualTo(Constants.KEY_USERNAME, binding.username.getText().toString().trim())
+                .whereEqualTo(Constants.KEY_USERNAME, binding.username.getText().toString())
                 .whereEqualTo(Constants.KEY_PASSWORD, binding.password.getText().toString())
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful() && task.getResult() != null
-                        && task.getResult().getDocuments().size() > 0) {
+                    if (task.isSuccessful() && task.getResult() != null
+                            && task.getResult().getDocuments().size() > 0) {
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                        database.collection(Constants.KEY_COLLECTION_WALLETS)
+                                .whereEqualTo("userId", documentSnapshot.getId())
+                                .get()
+                                .addOnSuccessListener(walletTask -> {
+                                    DocumentSnapshot walletSnapshot = walletTask.getDocuments().get(0);
+                                    preferenceManager.putString(Constants.KEY_WALLET_ID, walletSnapshot.getId());
+                                });
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID, documentSnapshot.getId());
                         preferenceManager.putString(Constants.KEY_USERNAME, documentSnapshot.getString(Constants.KEY_USERNAME));
