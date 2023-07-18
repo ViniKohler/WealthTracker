@@ -71,6 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
                     preferenceManager.putString(Constants.KEY_USERNAME, binding.username.getText().toString());
                     preferenceManager.putString(Constants.KEY_NAME, binding.name.getText().toString());
                     preferenceManager.putString(Constants.KEY_PASSWORD, binding.password.getText().toString());
+                    preferenceManager.putString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL, "0");
                     HashMap<String, Object> wallet = new HashMap<>();
                     wallet.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
                     wallet.put(Constants.KEY_BALANCE, "0.00");

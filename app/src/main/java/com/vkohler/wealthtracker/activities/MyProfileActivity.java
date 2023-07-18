@@ -49,6 +49,7 @@ public class MyProfileActivity extends AppCompatActivity {
         if (preferenceManager.getString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL).equals("1")) {
             binding.passwordHint.setVisibility(View.GONE);
             binding.passwordText.setText("password");
+            preferenceManager.putString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL, "1");
         }
     }
 

@@ -14,6 +14,6 @@ public class Constants {
     public static final String KEY_WALLET_ID = "walletId";
     public static final String KEY_BALANCE = "balance";
 
-    public static final String KEY_PASSWORD_VISIBILITY_TUTORIAL = "0";
+    public static final String KEY_PASSWORD_VISIBILITY_TUTORIAL = "tutorial";
 
 }
