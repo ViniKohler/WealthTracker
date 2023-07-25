@@ -44,15 +44,13 @@ public class MainActivity extends AppCompatActivity {
                 binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.red));
                 binding.balance.setTextColor(getResources().getColor(R.color.text_secondary));
                 binding.currency.setTextColor(getResources().getColor(R.color.text_secondary));
-                binding.balance.setText("0000");
-                binding.balance.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                binding.balance.setText("••••");
                 isBalanceVisible = false;
             } else {
                 binding.visibility.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
                 binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.green));
                 binding.balance.setTextColor(getResources().getColor(R.color.text_primary));
                 binding.currency.setTextColor(getResources().getColor(R.color.text_primary));
-                binding.balance.setInputType(InputType.TYPE_CLASS_TEXT);
                 binding.balance.setText("0.00");
                 isBalanceVisible = true;
             }
