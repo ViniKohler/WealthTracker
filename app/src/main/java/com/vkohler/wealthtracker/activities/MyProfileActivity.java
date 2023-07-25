@@ -48,10 +48,9 @@ public class MyProfileActivity extends AppCompatActivity {
         binding.newName.setText(currentName);
         binding.newConfirmPassword.setText(currentPassword);
 
-        if (preferenceManager.getString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL).equals("1")) {
+        if (preferenceManager.getString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL).equals("done")) {
             binding.passwordHint.setVisibility(View.GONE);
             binding.passwordText.setText("password");
-            preferenceManager.putString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL, "1");
         }
     }
 
@@ -60,6 +59,7 @@ public class MyProfileActivity extends AppCompatActivity {
             if (isPasswordHidden) {
                 binding.password.setInputType(InputType.TYPE_CLASS_TEXT);
                 isPasswordHidden = false;
+                preferenceManager.putString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL, "done");
             } else {
                 binding.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 isPasswordHidden = true;
