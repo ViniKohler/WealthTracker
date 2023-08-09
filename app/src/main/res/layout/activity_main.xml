@@ -42,11 +42,12 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/balanceContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:paddingVertical="10dp"
         android:background="@color/background_light"
+        android:paddingVertical="10dp"
         app:layout_constraintTop_toBottomOf="@id/header">
 
         <View
@@ -64,26 +65,26 @@
             android:id="@+id/balanceText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Balance"
             android:layout_marginStart="10dp"
+            android:text="Balance"
             android:textColor="@color/text_secondary"
             android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@id/visibility"
             app:layout_constraintBottom_toTopOf="@id/currency"
+            app:layout_constraintStart_toEndOf="@id/visibility"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="$ "
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/visibility"
-            app:layout_constraintTop_toBottomOf="@id/balanceText"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/balanceText" />
 
         <TextView
             android:id="@+id/balance"
@@ -93,9 +94,9 @@
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="@id/currency"
             app:layout_constraintBottom_toBottomOf="@id/currency"
-            app:layout_constraintStart_toEndOf="@id/currency"/>
+            app:layout_constraintStart_toEndOf="@id/currency"
+            app:layout_constraintTop_toTopOf="@id/currency" />
 
         <ImageView
             android:id="@+id/eye"
@@ -110,6 +111,16 @@
             app:tint="@color/green" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toTopOf="@id/footer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/balanceContainer" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footer"
@@ -126,6 +137,7 @@
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <ImageView
+            android:id="@+id/home"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="13dp"
@@ -136,30 +148,21 @@
             app:tint="@color/green" />
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/background_corner"
-            android:backgroundTint="@color/background_dark"
-            app:layout_constraintBottom_toBottomOf="@id/addButton"
-            app:layout_constraintEnd_toEndOf="@id/addButton"
-            app:layout_constraintStart_toStartOf="@id/addButton"
-            app:layout_constraintTop_toTopOf="@id/addButton" />
-
-        <ImageView
             android:id="@+id/addButton"
             android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="20dp"
+            android:layout_height="35dp"
             android:background="@drawable/background_corner"
             android:backgroundTint="@color/green"
-            android:padding="15dp"
+            android:padding="3dp"
             android:src="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:tint="@color/text_primary" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/white" />
 
         <ImageView
+            android:id="@+id/data"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="10dp"

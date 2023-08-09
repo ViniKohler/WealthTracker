@@ -120,6 +120,9 @@ public class MyProfileActivity extends AppCompatActivity {
                     .addOnSuccessListener(v -> {
                         preferenceManager.putString(Constants.KEY_USERNAME, newUsername);
                         showToast("Username updated successfully");
+                        binding.editPanel.setVisibility(View.GONE);
+                        binding.edit.setVisibility(View.VISIBLE);
+                        binding.delete.setVisibility(View.VISIBLE);
                         init();
                     }).addOnFailureListener(e -> {
                         showToast(e.getMessage());
@@ -131,6 +134,9 @@ public class MyProfileActivity extends AppCompatActivity {
                     .addOnSuccessListener(v -> {
                         preferenceManager.putString(Constants.KEY_NAME, newName);
                         showToast("Name updated successfully");
+                        binding.editPanel.setVisibility(View.GONE);
+                        binding.edit.setVisibility(View.VISIBLE);
+                        binding.delete.setVisibility(View.VISIBLE);
                         init();
                     })
                     .addOnFailureListener(e -> {
@@ -143,16 +149,16 @@ public class MyProfileActivity extends AppCompatActivity {
                     .addOnSuccessListener(v -> {
                         preferenceManager.putString(Constants.KEY_PASSWORD, newPassword);
                         showToast("Password updated successfully");
+                        binding.editPanel.setVisibility(View.GONE);
+                        binding.edit.setVisibility(View.VISIBLE);
+                        binding.delete.setVisibility(View.VISIBLE);
                         init();
+
                     })
                     .addOnFailureListener(e -> {
                         showToast(e.getMessage());
                     });
         }
-
-        binding.editPanel.setVisibility(View.GONE);
-        binding.edit.setVisibility(View.VISIBLE);
-        binding.delete.setVisibility(View.VISIBLE);
     }
 
     private void deleteUser() {
