@@ -14,6 +14,12 @@ public class Constants {
     public static final String KEY_WALLET_ID = "walletId";
     public static final String KEY_BALANCE = "balance";
 
+    public static final String KEY_COLLECTION_TRANSACTIONS = "transactions";
+    public static final String KEY_TRANSACTION_ID = "transactionId";
+    public static final String KEY_TRANSACTION_VALUE = "transactionValue";
+    public static final String KEY_TRANSACTION_POSITIVITY = "isPositive";
+    public static final String KEY_TRANSACTION_DATETIME = "transactionDatetime";
+
     public static final String KEY_PASSWORD_VISIBILITY_TUTORIAL = "tutorial";
 
 }

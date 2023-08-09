@@ -13,16 +13,21 @@ import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityMainBinding;
+import com.vkohler.wealthtracker.fragments.AddTransactionFragment;
 import com.vkohler.wealthtracker.fragments.DataFragment;
 import com.vkohler.wealthtracker.fragments.HomeFragment;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
+
+import java.math.BigDecimal;
 
 public class MainActivity extends AppCompatActivity {
 
     PreferenceManager preferenceManager;
     ActivityMainBinding binding;
     boolean isBalanceVisible = true;
+    boolean isAddTransactionVisible = false;
+    int lastFragment = 0; // 0-Home 1-Data
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +49,27 @@ public class MainActivity extends AppCompatActivity {
         binding.eye.setOnClickListener(v -> {
             changeVisibility();
         });
+        binding.addButton.setOnClickListener(v -> {
+            if (!isAddTransactionVisible) {
+                isAddTransactionVisible = true;
+                transactionFragment();
+            } else {
+                lastFragment();
+            }
+        });
         binding.home.setOnClickListener(v -> {
             homeFragment();
             binding.home.setColorFilter(ContextCompat.getColor(this, R.color.green));
             binding.data.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary));
-
+            lastFragment = 0;
         });
         binding.data.setOnClickListener(v -> {
             dataFragment();
             binding.data.setColorFilter(ContextCompat.getColor(this, R.color.green));
             binding.home.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary));
+            lastFragment = 1;
         });
+
     }
 
     private void init() {
@@ -86,6 +101,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void transactionFragment() {
+        AddTransactionFragment addTransactionFragment = new AddTransactionFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentContainer, addTransactionFragment);
+        fragmentTransaction.commit();
+    }
+
     private void homeFragment() {
         HomeFragment homeFragment = new HomeFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -102,9 +125,26 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    private void lastFragment() {
+        switch (lastFragment) {
+            case 0:
+                isAddTransactionVisible = false;
+                homeFragment();
+                break;
+            case 1:
+                isAddTransactionVisible = false;
+                dataFragment();
+                break;
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         init();
+    }
+
+    private void showToast(String m) {
+        Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
     }
 }
