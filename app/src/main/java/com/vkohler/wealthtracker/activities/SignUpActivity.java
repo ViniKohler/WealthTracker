@@ -81,7 +81,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 binding.status.setText("Opening app...");
                                 preferenceManager.putString(Constants.KEY_WALLET_ID, walletReference.getId());
                                 preferenceManager.putString(Constants.KEY_BALANCE, "0.00");
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             }).addOnFailureListener(e -> {

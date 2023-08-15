@@ -2,6 +2,7 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -20,10 +21,9 @@ import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class MyProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     PreferenceManager preferenceManager;
     ActivityMyProfileBinding binding;
@@ -32,6 +32,7 @@ public class MyProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0);
         binding = ActivityMyProfileBinding.inflate(getLayoutInflater());
         preferenceManager = new PreferenceManager(getApplicationContext());
         setContentView(binding.getRoot());
@@ -99,14 +100,16 @@ public class MyProfileActivity extends AppCompatActivity {
             binding.edit.setVisibility(View.VISIBLE);
             binding.delete.setVisibility(View.VISIBLE);
         });
-        binding.back.setOnClickListener(v -> onBackPressed());
+        binding.back.setOnClickListener(v -> {
+            String lastActivity = preferenceManager.getString(Constants.KEY_LAST_SCREEN);
+            changeActivity(lastActivity);
+        });
     }
 
     private void updateUser() {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference userReference = database.collection(Constants.KEY_COLLECTION_USERS)
                 .document(preferenceManager.getString(Constants.KEY_USER_ID));
-        HashMap<String, Object> updatedUser = new HashMap<>();
 
         String currentUsername = preferenceManager.getString(Constants.KEY_USERNAME);
         String currentName = preferenceManager.getString(Constants.KEY_NAME);
@@ -115,62 +118,50 @@ public class MyProfileActivity extends AppCompatActivity {
         String newUsername = binding.newUsername.getText().toString();
         String newName = binding.newName.getText().toString();
         String newPassword = binding.newPassword.getText().toString();
+        String newPassword2 = binding.newConfirmPassword.getText().toString();
 
-        if (currentUsername.equals(newUsername) &&
-                currentName.equals(newName) && currentPassword.equals(newPassword)) {
+        if (currentUsername.equals(newUsername)
+                && currentName.equals(newName)
+                && currentPassword.equals(newPassword)) {
             showToast("Nothing to update");
-        }
+        } else {
+            if (!currentUsername.equals(newUsername)) {
+                updateFieldAndShowToast(userReference, Constants.KEY_USERNAME, newUsername, "Username");
+            }
 
-        if (!currentUsername.equals(newUsername)) {
-            userReference.update(Constants.KEY_USERNAME, newUsername)
-                    .addOnSuccessListener(v -> {
-                        preferenceManager.putString(Constants.KEY_USERNAME, newUsername);
-                        showToast("Username updated successfully");
-                        binding.editPanel.setVisibility(View.GONE);
-                        binding.edit.setVisibility(View.VISIBLE);
-                        binding.delete.setVisibility(View.VISIBLE);
-                        init();
-                    }).addOnFailureListener(e -> {
-                        showToast(e.getMessage());
-                    });
-        }
+            if (!currentName.equals(newName)) {
+                updateFieldAndShowToast(userReference, Constants.KEY_NAME, newName, "Name");
+            }
 
-        if (!currentName.equals(newName)) {
-            userReference.update(Constants.KEY_NAME, newName)
-                    .addOnSuccessListener(v -> {
-                        preferenceManager.putString(Constants.KEY_NAME, newName);
-                        showToast("Name updated successfully");
-                        binding.editPanel.setVisibility(View.GONE);
-                        binding.edit.setVisibility(View.VISIBLE);
-                        binding.delete.setVisibility(View.VISIBLE);
-                        init();
-                    })
-                    .addOnFailureListener(e -> {
-                        showToast(e.getMessage());
-                    });
+            if (!currentPassword.equals(newPassword)) {
+                if (!newPassword.equals(newPassword2)) {
+                    showToast("Passwords don't match");
+                } else {
+                    updateFieldAndShowToast(userReference, Constants.KEY_PASSWORD, newPassword, "Password");
+                }
+            }
         }
-
-        if (!currentPassword.equals(newPassword)) {
-            userReference.update(Constants.KEY_PASSWORD, newPassword)
-                    .addOnSuccessListener(v -> {
-                        preferenceManager.putString(Constants.KEY_PASSWORD, newPassword);
-                        showToast("Password updated successfully");
-                        binding.editPanel.setVisibility(View.GONE);
-                        binding.edit.setVisibility(View.VISIBLE);
-                        binding.delete.setVisibility(View.VISIBLE);
-                        init();
-
-                    })
-                    .addOnFailureListener(e -> {
-                        showToast(e.getMessage());
-                    });
-        }
+        binding.editPanel.setVisibility(View.GONE);
+        binding.edit.setVisibility(View.VISIBLE);
+        binding.delete.setVisibility(View.VISIBLE);
     }
+
+
+        private void updateFieldAndShowToast(DocumentReference userReference, String fieldKey, String newValue, String successMessage) {
+            userReference.update(fieldKey, newValue)
+                    .addOnSuccessListener(v -> {
+                        preferenceManager.putString(fieldKey, newValue);
+                        showToast(successMessage + " updated successfully");
+                        init();
+                    })
+                    .addOnFailureListener(e -> {
+                        showToast(e.getMessage());
+                    });
+        }
 
     private void deleteUser() {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
 
-        // Primeiro, exclua as transações associadas à wallet do usuário
         CollectionReference transactionsRef = database.collection(Constants.KEY_COLLECTION_TRANSACTIONS);
         Query transactionsQuery = transactionsRef.whereEqualTo(Constants.KEY_WALLET_ID, preferenceManager.getString(Constants.KEY_WALLET_ID));
 
@@ -183,10 +174,8 @@ public class MyProfileActivity extends AppCompatActivity {
                         deleteTasks.add(transactionDoc.getReference().delete());
                     }
 
-                    // Aguarde a conclusão de todas as tarefas de exclusão
                     Tasks.whenAllComplete(deleteTasks)
                             .addOnSuccessListener(results -> {
-                                // Todas as transações foram excluídas, agora você pode prosseguir para excluir a wallet e o usuário
                                 DocumentReference walletReference = database.collection(Constants.KEY_COLLECTION_WALLETS)
                                         .document(preferenceManager.getString(Constants.KEY_WALLET_ID));
                                 walletReference.delete()
@@ -215,6 +204,29 @@ public class MyProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     showToast(e.getMessage());
                 });
+    }
+
+    private void changeActivity(String activityName) {
+        Class newActivity;
+        switch (activityName) {
+            case "home":
+                newActivity = HomeActivity.class;
+                break;
+            case "transaction":
+                newActivity = TransactionActivity.class;
+                break;
+            case "data":
+                newActivity = DataActivity.class;
+                break;
+            case "profile":
+                newActivity = ProfileActivity.class;
+                break;
+            default:
+                newActivity = SignInActivity.class;
+        }
+        Intent intent = new Intent(getApplicationContext(), newActivity);
+        startActivity(intent);
+        finish();
     }
 
     private void showToast(String m) {

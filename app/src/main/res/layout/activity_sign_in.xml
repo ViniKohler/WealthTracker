@@ -79,7 +79,7 @@
 
         <Button
             android:id="@+id/signIn"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:backgroundTint="@color/green"
             android:text="Sign In"
@@ -93,6 +93,14 @@
             android:indeterminateTint="@color/green"
             android:visibility="gone" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_dark"
+        app:layout_constraintTop_toBottomOf="@id/inputContainer"
+        app:layout_constraintStart_toStartOf="@id/inputContainer"/>
 
     <TextView
         android:id="@+id/createAccount"

@@ -24,7 +24,7 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(getApplicationContext());
         if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(intent);
             finish();
         }
@@ -51,6 +51,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private void signIn() {
         loading(true);
+        binding.status.setText("");
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .whereEqualTo(Constants.KEY_USERNAME, binding.username.getText().toString())
@@ -74,11 +75,12 @@ public class SignInActivity extends AppCompatActivity {
                                     DocumentSnapshot walletSnapshot = walletTask.getDocuments().get(0);
                                     preferenceManager.putString(Constants.KEY_WALLET_ID, walletSnapshot.getId());
                                     preferenceManager.putString(Constants.KEY_BALANCE, walletSnapshot.getString(Constants.KEY_BALANCE));
+                                })
+                                .addOnCompleteListener(completeTask -> {
+                                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
                                 });
-
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
                     } else {
                         loading(false);
                         showToast("Unable to sign in");

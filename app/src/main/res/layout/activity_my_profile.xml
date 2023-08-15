@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_dark"
-    tools:context=".activities.MyProfileActivity">
+    tools:context=".activities.ProfileActivity">
 
     <ImageView
         android:id="@+id/back"
@@ -255,6 +255,12 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="20dp" />
+
+            <ProgressBar
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="gone"
+                android:indeterminateTint="@color/green"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
