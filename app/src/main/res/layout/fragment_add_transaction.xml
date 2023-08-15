@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:backgroundTint="@color/green"
-        android:inputType="number"
+        android:inputType="text"
         android:paddingHorizontal="20dp"
         android:textColor="@color/text_primary"
         app:layout_constraintTop_toTopOf="parent"

@@ -8,14 +8,20 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.vkohler.wealthtracker.databinding.ActivityMyProfileBinding;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.List;
 
 public class MyProfileActivity extends AppCompatActivity {
 
@@ -164,18 +170,43 @@ public class MyProfileActivity extends AppCompatActivity {
     private void deleteUser() {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
 
-        DocumentReference walletReference = database.collection(Constants.KEY_COLLECTION_WALLETS)
-                .document(preferenceManager.getString(Constants.KEY_WALLET_ID));
-        walletReference.delete()
-                .addOnSuccessListener(v -> {
-                    DocumentReference userReference = database.collection(Constants.KEY_COLLECTION_USERS)
-                            .document(preferenceManager.getString(Constants.KEY_USER_ID));
-                    userReference.delete()
-                            .addOnSuccessListener(task -> {
-                                preferenceManager.clear();
-                                startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-                                finish();
-                                showToast("User deleted successfully");
+        // Primeiro, exclua as transações associadas à wallet do usuário
+        CollectionReference transactionsRef = database.collection(Constants.KEY_COLLECTION_TRANSACTIONS);
+        Query transactionsQuery = transactionsRef.whereEqualTo(Constants.KEY_WALLET_ID, preferenceManager.getString(Constants.KEY_WALLET_ID));
+
+        transactionsQuery.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<DocumentSnapshot> transactions = queryDocumentSnapshots.getDocuments();
+                    List<Task<Void>> deleteTasks = new ArrayList<>();
+
+                    for (DocumentSnapshot transactionDoc : transactions) {
+                        deleteTasks.add(transactionDoc.getReference().delete());
+                    }
+
+                    // Aguarde a conclusão de todas as tarefas de exclusão
+                    Tasks.whenAllComplete(deleteTasks)
+                            .addOnSuccessListener(results -> {
+                                // Todas as transações foram excluídas, agora você pode prosseguir para excluir a wallet e o usuário
+                                DocumentReference walletReference = database.collection(Constants.KEY_COLLECTION_WALLETS)
+                                        .document(preferenceManager.getString(Constants.KEY_WALLET_ID));
+                                walletReference.delete()
+                                        .addOnSuccessListener(v -> {
+                                            DocumentReference userReference = database.collection(Constants.KEY_COLLECTION_USERS)
+                                                    .document(preferenceManager.getString(Constants.KEY_USER_ID));
+                                            userReference.delete()
+                                                    .addOnSuccessListener(task -> {
+                                                        preferenceManager.clear();
+                                                        startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+                                                        finish();
+                                                        showToast("User deleted successfully");
+                                                    })
+                                                    .addOnFailureListener(e -> {
+                                                        showToast(e.getMessage());
+                                                    });
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            showToast(e.getMessage());
+                                        });
                             })
                             .addOnFailureListener(e -> {
                                 showToast(e.getMessage());

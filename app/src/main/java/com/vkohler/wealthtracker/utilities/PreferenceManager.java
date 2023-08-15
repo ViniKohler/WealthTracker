@@ -2,6 +2,13 @@ package com.vkohler.wealthtracker.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
 
 public class PreferenceManager {
 
@@ -35,5 +42,24 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
+    }
+
+    public void updateBalance(Context context, String transactionString) {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        PreferenceManager preferenceManager = new PreferenceManager(context);
+        DocumentReference walletReference = database.collection(Constants.KEY_COLLECTION_WALLETS)
+                .document(preferenceManager.getString(Constants.KEY_WALLET_ID));
+        HashMap<String, Object> updateWallet = new HashMap<>();
+
+        String currentBalanceString = preferenceManager.getString(Constants.KEY_BALANCE);
+
+        BigDecimal currentBalance = new BigDecimal(currentBalanceString);
+        BigDecimal transaction = new BigDecimal(transactionString);
+
+        BigDecimal newBalance = currentBalance.add(transaction);
+        String newBalanceString = newBalance.toString();
+
+        Toast.makeText(context, newBalanceString, Toast.LENGTH_SHORT).show();
+        preferenceManager.putString(Constants.KEY_BALANCE, newBalanceString);
     }
 }

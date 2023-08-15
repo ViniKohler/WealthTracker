@@ -2,13 +2,13 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.text.InputType;
 import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
@@ -19,7 +19,6 @@ import com.vkohler.wealthtracker.fragments.HomeFragment;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
-import java.math.BigDecimal;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     boolean isBalanceVisible = true;
     boolean isAddTransactionVisible = false;
-    int lastFragment = 0; // 0-Home 1-Data
+    int lastFragment = 1; // 1-Home 2-Data 3-Transaction
+    Fragment activeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,31 +50,35 @@ public class MainActivity extends AppCompatActivity {
             changeVisibility();
         });
         binding.addButton.setOnClickListener(v -> {
-            if (!isAddTransactionVisible) {
-                isAddTransactionVisible = true;
-                transactionFragment();
-            } else {
-                lastFragment();
-            }
+//            if (!isAddTransactionVisible) {
+//                isAddTransactionVisible = true;
+//                switchFragments(3);
+//            } else {
+//                lastFragment();
+//            }
+            switchFragments(0);
         });
         binding.home.setOnClickListener(v -> {
-            homeFragment();
+            switchFragments(1);
             binding.home.setColorFilter(ContextCompat.getColor(this, R.color.green));
             binding.data.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary));
             lastFragment = 0;
+            isAddTransactionVisible = false;
         });
         binding.data.setOnClickListener(v -> {
-            dataFragment();
+            switchFragments(2);
             binding.data.setColorFilter(ContextCompat.getColor(this, R.color.green));
             binding.home.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary));
             lastFragment = 1;
+            isAddTransactionVisible = false;
         });
 
     }
 
     private void init() {
         binding.name.setText(preferenceManager.getString(Constants.KEY_NAME));
-        homeFragment();
+        binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
+        switchFragments(1);
     }
 
     private void signOut() {
@@ -96,44 +100,47 @@ public class MainActivity extends AppCompatActivity {
             binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.green));
             binding.balance.setTextColor(getResources().getColor(R.color.text_primary));
             binding.currency.setTextColor(getResources().getColor(R.color.text_primary));
-            binding.balance.setText("0.00");
+            binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
             isBalanceVisible = true;
         }
     }
 
-    private void transactionFragment() {
-        AddTransactionFragment addTransactionFragment = new AddTransactionFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, addTransactionFragment);
-        fragmentTransaction.commit();
-    }
 
-    private void homeFragment() {
-        HomeFragment homeFragment = new HomeFragment();
+    private void switchFragments(int index) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, homeFragment);
-        fragmentTransaction.commit();
-    }
-
-    private void dataFragment() {
-        DataFragment dataFragment = new DataFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, dataFragment);
+        switch (index) {
+            case 0:
+                fragmentManager.beginTransaction().remove(activeFragment).commit();
+                break;
+            case 1:
+                HomeFragment homeFragment = new HomeFragment();
+                fragmentTransaction.replace(R.id.fragmentContainer, homeFragment);
+                activeFragment = homeFragment;
+                break;
+            case 2:
+                DataFragment dataFragment = new DataFragment();
+                fragmentTransaction.replace(R.id.fragmentContainer, dataFragment);
+                activeFragment = dataFragment;
+                break;
+            case 3:
+                AddTransactionFragment addTransactionFragment = new AddTransactionFragment();
+                fragmentTransaction.replace(R.id.fragmentContainer, addTransactionFragment);
+                activeFragment = addTransactionFragment;
+                break;
+        }
         fragmentTransaction.commit();
     }
 
     private void lastFragment() {
         switch (lastFragment) {
-            case 0:
-                isAddTransactionVisible = false;
-                homeFragment();
-                break;
             case 1:
                 isAddTransactionVisible = false;
-                dataFragment();
+                switchFragments(1);
+                break;
+            case 2:
+                isAddTransactionVisible = false;
+                switchFragments(2);
                 break;
         }
     }

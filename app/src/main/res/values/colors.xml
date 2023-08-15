@@ -6,6 +6,7 @@
     <color name="background_light">#2A2A2C</color>
     <color name="background_transparent">#A61F1F22</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="blue">#3CECE1</color>
     <color name="green">#18F384</color>
     <color name="red">#FF4651</color>
     <color name="text_primary">#DADADA</color>
