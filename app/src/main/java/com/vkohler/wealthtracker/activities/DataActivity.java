@@ -2,15 +2,16 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.vkohler.wealthtracker.databinding.ActivityDataBinding;
+import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
 public class DataActivity extends AppCompatActivity {
 
+    ActivityManager activityManager;
     PreferenceManager preferenceManager;
     ActivityDataBinding binding;
 
@@ -18,6 +19,7 @@ public class DataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityDataBinding.inflate(getLayoutInflater());
+        activityManager = new ActivityManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
         preferenceManager.putString(Constants.KEY_LAST_SCREEN, "data");
         overridePendingTransition(0, 0);
@@ -29,49 +31,25 @@ public class DataActivity extends AppCompatActivity {
 
     private void setListeners() {
         binding.name.setOnClickListener(v -> {
-            changeActivity("profile");
+            activityManager.startActivity("profile");
         });
         binding.signOut.setOnClickListener(v -> {
             signOut();
         });
         binding.home.setOnClickListener(v -> {
-            changeActivity("home");
+            activityManager.startActivity("home");
         });
         binding.addButton.setOnClickListener(v -> {
-            changeActivity("transaction");
+            activityManager.startActivity("transaction");
         });
         binding.data.setOnClickListener(v -> {
-            changeActivity("data");
+            activityManager.startActivity("data");
         });
-    }
-
-    private void changeActivity(String activityName) {
-        Class newActivity;
-        switch (activityName) {
-            case "home":
-                newActivity = HomeActivity.class;
-                break;
-            case "transaction":
-                newActivity = TransactionActivity.class;
-                break;
-            case "data":
-                newActivity = DataActivity.class;
-                break;
-            case "profile":
-                newActivity = ProfileActivity.class;
-                break;
-            default:
-                newActivity = SignInActivity.class;
-        }
-        Intent intent = new Intent(getApplicationContext(), newActivity);
-        startActivity(intent);
-        finish();
     }
 
     private void signOut() {
         preferenceManager.clear();
-        startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-        finish();
+        activityManager.startActivity("signin");
     }
 
     private void updateHUD() {

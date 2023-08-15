@@ -2,13 +2,13 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.vkohler.wealthtracker.databinding.ActivitySignUpBinding;
+import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
@@ -16,15 +16,17 @@ import java.util.HashMap;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    ActivitySignUpBinding binding;
+    ActivityManager activityManager;
     PreferenceManager preferenceManager;
+    ActivitySignUpBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityManager = new ActivityManager(getApplicationContext());
+        preferenceManager = new PreferenceManager(getApplicationContext());
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        preferenceManager = new PreferenceManager(getApplicationContext());
         setListeners();
     }
 
@@ -57,7 +59,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUp() {
         loading(true);
-        binding.status.setText("Creating user...");
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
         user.put(Constants.KEY_USERNAME, binding.username.getText().toString());
@@ -66,7 +67,6 @@ public class SignUpActivity extends AppCompatActivity {
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .add(user)
                 .addOnSuccessListener(userReference -> {
-                    binding.status.setText("Creating wallet...");
                     preferenceManager.putString(Constants.KEY_USER_ID, userReference.getId());
                     preferenceManager.putString(Constants.KEY_USERNAME, binding.username.getText().toString());
                     preferenceManager.putString(Constants.KEY_NAME, binding.name.getText().toString());
@@ -78,12 +78,9 @@ public class SignUpActivity extends AppCompatActivity {
                     database.collection(Constants.KEY_COLLECTION_WALLETS)
                             .add(wallet)
                             .addOnSuccessListener(walletReference -> {
-                                binding.status.setText("Opening app...");
                                 preferenceManager.putString(Constants.KEY_WALLET_ID, walletReference.getId());
                                 preferenceManager.putString(Constants.KEY_BALANCE, "0.00");
-                                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
+                                activityManager.startActivity("home");
                             }).addOnFailureListener(e -> {
                                 loading(false);
                                 showToast(e.getMessage());
@@ -99,11 +96,9 @@ public class SignUpActivity extends AppCompatActivity {
         if (bool) {
             binding.signUp.setVisibility(View.GONE);
             binding.progressBar.setVisibility(View.VISIBLE);
-            binding.status.setVisibility(View.VISIBLE);
         } else {
             binding.signUp.setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.GONE);
-            binding.status.setVisibility(View.GONE);
         }
     }
 

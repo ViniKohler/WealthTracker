@@ -11,22 +11,23 @@ import android.widget.Toast;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.vkohler.wealthtracker.databinding.ActivitySignInBinding;
+import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
 public class SignInActivity extends AppCompatActivity {
 
-    ActivitySignInBinding binding;
+    ActivityManager activityManager;
     PreferenceManager preferenceManager;
+    ActivitySignInBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityManager = new ActivityManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
         if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(intent);
-            finish();
+            activityManager.startActivity("home");
         }
         binding = ActivitySignInBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -39,8 +40,7 @@ public class SignInActivity extends AppCompatActivity {
             startActivity(browserIntent);
         });
         binding.createAccount.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-            startActivity(intent);
+            activityManager.startActivity("signup");
         });
         binding.signIn.setOnClickListener(v -> {
             if (isValidSignInData()) {
@@ -77,9 +77,7 @@ public class SignInActivity extends AppCompatActivity {
                                     preferenceManager.putString(Constants.KEY_BALANCE, walletSnapshot.getString(Constants.KEY_BALANCE));
                                 })
                                 .addOnCompleteListener(completeTask -> {
-                                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
+                                    activityManager.startActivity("home");
                                 });
                     } else {
                         loading(false);

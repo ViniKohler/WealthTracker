@@ -3,19 +3,20 @@ package com.vkohler.wealthtracker.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityHomeBinding;
+import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
 
 public class HomeActivity extends AppCompatActivity {
 
+    ActivityManager activityManager;
     PreferenceManager preferenceManager;
     ActivityHomeBinding binding;
     boolean isBalanceVisible = true;
@@ -24,6 +25,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
+        activityManager = new ActivityManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
         preferenceManager.putString(Constants.KEY_LAST_SCREEN, "home");
         overridePendingTransition(0, 0);
@@ -35,7 +37,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setListeners() {
         binding.name.setOnClickListener(v -> {
-            changeActivity("profile");
+            activityManager.startActivity("profile");
         });
         binding.signOut.setOnClickListener(v -> {
             signOut();
@@ -44,13 +46,13 @@ public class HomeActivity extends AppCompatActivity {
             changeVisibility();
         });
         binding.home.setOnClickListener(v -> {
-            changeActivity("home");
+            activityManager.startActivity("home");
         });
         binding.addButton.setOnClickListener(v -> {
-            changeActivity("transaction");
+            activityManager.startActivity("transaction");
         });
         binding.data.setOnClickListener(v -> {
-            changeActivity("data");
+            activityManager.startActivity("data");
         });
 
     }
@@ -66,8 +68,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void signOut() {
         preferenceManager.clear();
-        startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-        finish();
+        activityManager.startActivity("signin");
     }
 
     private void changeVisibility() {
@@ -86,30 +87,6 @@ public class HomeActivity extends AppCompatActivity {
             binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
             isBalanceVisible = true;
         }
-    }
-
-
-    private void changeActivity(String activityName) {
-        Class newActivity;
-        switch (activityName) {
-            case "home":
-                newActivity = HomeActivity.class;
-                break;
-            case "transaction":
-                newActivity = TransactionActivity.class;
-                break;
-            case "data":
-                newActivity = DataActivity.class;
-                break;
-            case "profile":
-                newActivity = ProfileActivity.class;
-                break;
-            default:
-                newActivity = SignInActivity.class;
-        }
-        Intent intent = new Intent(getApplicationContext(), newActivity);
-        startActivity(intent);
-        finish();
     }
 
     @Override

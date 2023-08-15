@@ -2,8 +2,6 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -17,6 +15,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.vkohler.wealthtracker.databinding.ActivityMyProfileBinding;
+import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
@@ -25,6 +24,7 @@ import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    ActivityManager activityManager;
     PreferenceManager preferenceManager;
     ActivityMyProfileBinding binding;
     private boolean isPasswordHidden = true;
@@ -34,6 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
         binding = ActivityMyProfileBinding.inflate(getLayoutInflater());
+        activityManager = new ActivityManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
         setContentView(binding.getRoot());
         init();
@@ -102,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
         binding.back.setOnClickListener(v -> {
             String lastActivity = preferenceManager.getString(Constants.KEY_LAST_SCREEN);
-            changeActivity(lastActivity);
+            activityManager.startActivity(lastActivity);
         });
     }
 
@@ -185,8 +186,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             userReference.delete()
                                                     .addOnSuccessListener(task -> {
                                                         preferenceManager.clear();
-                                                        startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-                                                        finish();
+                                                        activityManager.startActivity("signin");
                                                         showToast("User deleted successfully");
                                                     })
                                                     .addOnFailureListener(e -> {
@@ -204,29 +204,6 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     showToast(e.getMessage());
                 });
-    }
-
-    private void changeActivity(String activityName) {
-        Class newActivity;
-        switch (activityName) {
-            case "home":
-                newActivity = HomeActivity.class;
-                break;
-            case "transaction":
-                newActivity = TransactionActivity.class;
-                break;
-            case "data":
-                newActivity = DataActivity.class;
-                break;
-            case "profile":
-                newActivity = ProfileActivity.class;
-                break;
-            default:
-                newActivity = SignInActivity.class;
-        }
-        Intent intent = new Intent(getApplicationContext(), newActivity);
-        startActivity(intent);
-        finish();
     }
 
     private void showToast(String m) {
