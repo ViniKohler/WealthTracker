@@ -5,18 +5,19 @@ import androidx.core.content.ContextCompat;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityHomeBinding;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
+import com.vkohler.wealthtracker.utilities.LogManager;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
 
 public class HomeActivity extends AppCompatActivity {
 
     ActivityManager activityManager;
+    LogManager logManager;
     PreferenceManager preferenceManager;
     ActivityHomeBinding binding;
     boolean isBalanceVisible = true;
@@ -26,21 +27,23 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         activityManager = new ActivityManager(getApplicationContext());
+        logManager = new LogManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
+
         preferenceManager.putString(Constants.KEY_LAST_SCREEN, "home");
         overridePendingTransition(0, 0);
         setContentView(binding.getRoot());
 
         setListeners();
-        updateHUD();
+        updateUI();
     }
 
     private void setListeners() {
         binding.name.setOnClickListener(v -> {
             activityManager.startActivity("profile");
         });
-        binding.signOut.setOnClickListener(v -> {
-            signOut();
+        binding.logOut.setOnClickListener(v -> {
+            logManager.logOut();
         });
         binding.eye.setOnClickListener(v -> {
             changeVisibility();
@@ -57,18 +60,13 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void updateHUD() {
+    private void updateUI() {
         try {
             binding.name.setText(preferenceManager.getString(Constants.KEY_NAME));
             binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void signOut() {
-        preferenceManager.clear();
-        activityManager.startActivity("signin");
     }
 
     private void changeVisibility() {
@@ -92,10 +90,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        updateHUD();
-    }
-
-    private void showToast(String m) {
-        Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
+        updateUI();
     }
 }

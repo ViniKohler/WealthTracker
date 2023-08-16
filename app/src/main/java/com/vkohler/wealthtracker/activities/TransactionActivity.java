@@ -3,7 +3,6 @@ package com.vkohler.wealthtracker.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -11,11 +10,13 @@ import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityNewTransactionBinding;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
+import com.vkohler.wealthtracker.utilities.LogManager;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
 public class TransactionActivity extends AppCompatActivity {
 
     ActivityManager activityManager;
+    LogManager logManager;
     PreferenceManager preferenceManager;
     ActivityNewTransactionBinding binding;
 
@@ -23,21 +24,23 @@ public class TransactionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityManager = new ActivityManager(getApplicationContext());
+        logManager = new LogManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
+
         binding = ActivityNewTransactionBinding.inflate(getLayoutInflater());
         overridePendingTransition(0, 0);
         setContentView(binding.getRoot());
 
         setListeners();
-        updateHUD();
+        updateUI();
     }
 
     private void setListeners() {
         binding.name.setOnClickListener(v -> {
             activityManager.startActivity("profile");
         });
-        binding.signOut.setOnClickListener(v -> {
-            signOut();
+        binding.logOut.setOnClickListener(v -> {
+            logManager.logOut();
         });
         binding.home.setOnClickListener(v -> {
             activityManager.startActivity("home");
@@ -53,7 +56,7 @@ public class TransactionActivity extends AppCompatActivity {
         });
     }
 
-    private void updateHUD() {
+    private void updateUI() {
         try {
             binding.name.setText(preferenceManager.getString(Constants.KEY_NAME));
         } catch (Exception e) {
@@ -69,11 +72,6 @@ public class TransactionActivity extends AppCompatActivity {
                 binding.data.setColorFilter(ContextCompat.getColor(this, R.color.green));
                 break;
         }
-    }
-
-    private void signOut() {
-        preferenceManager.clear();
-        activityManager.startActivity("signin");
     }
 
     @Override

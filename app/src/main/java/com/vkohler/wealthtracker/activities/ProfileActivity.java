@@ -5,26 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.vkohler.wealthtracker.databinding.ActivityMyProfileBinding;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
+import com.vkohler.wealthtracker.utilities.LogManager;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
     ActivityManager activityManager;
+    LogManager logManager;
     PreferenceManager preferenceManager;
     ActivityMyProfileBinding binding;
     private boolean isPasswordHidden = true;
@@ -32,34 +24,16 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(0, 0);
         binding = ActivityMyProfileBinding.inflate(getLayoutInflater());
         activityManager = new ActivityManager(getApplicationContext());
+        logManager = new LogManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
+
+        overridePendingTransition(0, 0);
         setContentView(binding.getRoot());
-        init();
+
         setListeners();
-    }
-
-    private void init() {
-        String currentUsername = preferenceManager.getString(Constants.KEY_USERNAME);
-        String currentName = preferenceManager.getString(Constants.KEY_NAME);
-        String currentPassword = preferenceManager.getString(Constants.KEY_PASSWORD);
-
-        binding.name.setText(currentName);
-        binding.username.setText(currentUsername);
-        binding.name.setText(currentName);
-        binding.password.setText(currentPassword);
-
-        binding.newUsername.setText(currentUsername);
-        binding.newPassword.setText(currentPassword);
-        binding.newName.setText(currentName);
-        binding.newConfirmPassword.setText(currentPassword);
-
-        if (preferenceManager.getString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL).equals("done")) {
-            binding.passwordHint.setVisibility(View.GONE);
-            binding.passwordText.setText("password");
-        }
+        updateUI();
     }
 
     private void setListeners() {
@@ -94,7 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.delete.setVisibility(View.GONE);
         });
         binding.deleteUser.setOnClickListener(v -> {
-            deleteUser();
+            logManager.deleteLog();
         });
         binding.cancelDelete.setOnClickListener(v -> {
             binding.deletePanel.setVisibility(View.GONE);
@@ -108,105 +82,38 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void updateUser() {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        DocumentReference userReference = database.collection(Constants.KEY_COLLECTION_USERS)
-                .document(preferenceManager.getString(Constants.KEY_USER_ID));
-
-        String currentUsername = preferenceManager.getString(Constants.KEY_USERNAME);
-        String currentName = preferenceManager.getString(Constants.KEY_NAME);
-        String currentPassword = preferenceManager.getString(Constants.KEY_PASSWORD);
-
         String newUsername = binding.newUsername.getText().toString();
         String newName = binding.newName.getText().toString();
         String newPassword = binding.newPassword.getText().toString();
-        String newPassword2 = binding.newConfirmPassword.getText().toString();
+        String confirmNewPassword = binding.newConfirmPassword.getText().toString();
 
-        if (currentUsername.equals(newUsername)
-                && currentName.equals(newName)
-                && currentPassword.equals(newPassword)) {
-            showToast("Nothing to update");
-        } else {
-            if (!currentUsername.equals(newUsername)) {
-                updateFieldAndShowToast(userReference, Constants.KEY_USERNAME, newUsername, "Username");
-            }
+        logManager.updateLog(newUsername, newName, newPassword, confirmNewPassword);
 
-            if (!currentName.equals(newName)) {
-                updateFieldAndShowToast(userReference, Constants.KEY_NAME, newName, "Name");
-            }
+        updateUI();
 
-            if (!currentPassword.equals(newPassword)) {
-                if (!newPassword.equals(newPassword2)) {
-                    showToast("Passwords don't match");
-                } else {
-                    updateFieldAndShowToast(userReference, Constants.KEY_PASSWORD, newPassword, "Password");
-                }
-            }
-        }
         binding.editPanel.setVisibility(View.GONE);
         binding.edit.setVisibility(View.VISIBLE);
         binding.delete.setVisibility(View.VISIBLE);
     }
 
+    private void updateUI() {
+        String currentUsername = preferenceManager.getString(Constants.KEY_USERNAME);
+        String currentName = preferenceManager.getString(Constants.KEY_NAME);
+        String currentPassword = preferenceManager.getString(Constants.KEY_PASSWORD);
 
-        private void updateFieldAndShowToast(DocumentReference userReference, String fieldKey, String newValue, String successMessage) {
-            userReference.update(fieldKey, newValue)
-                    .addOnSuccessListener(v -> {
-                        preferenceManager.putString(fieldKey, newValue);
-                        showToast(successMessage + " updated successfully");
-                        init();
-                    })
-                    .addOnFailureListener(e -> {
-                        showToast(e.getMessage());
-                    });
+        binding.name.setText(currentName);
+        binding.username.setText(currentUsername);
+        binding.name.setText(currentName);
+        binding.password.setText(currentPassword);
+
+        binding.newUsername.setText(currentUsername);
+        binding.newPassword.setText(currentPassword);
+        binding.newName.setText(currentName);
+        binding.newConfirmPassword.setText(currentPassword);
+
+        if (preferenceManager.getString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL).equals("done")) {
+            binding.passwordHint.setVisibility(View.GONE);
+            binding.passwordText.setText("password");
         }
-
-    private void deleteUser() {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-
-        CollectionReference transactionsRef = database.collection(Constants.KEY_COLLECTION_TRANSACTIONS);
-        Query transactionsQuery = transactionsRef.whereEqualTo(Constants.KEY_WALLET_ID, preferenceManager.getString(Constants.KEY_WALLET_ID));
-
-        transactionsQuery.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<DocumentSnapshot> transactions = queryDocumentSnapshots.getDocuments();
-                    List<Task<Void>> deleteTasks = new ArrayList<>();
-
-                    for (DocumentSnapshot transactionDoc : transactions) {
-                        deleteTasks.add(transactionDoc.getReference().delete());
-                    }
-
-                    Tasks.whenAllComplete(deleteTasks)
-                            .addOnSuccessListener(results -> {
-                                DocumentReference walletReference = database.collection(Constants.KEY_COLLECTION_WALLETS)
-                                        .document(preferenceManager.getString(Constants.KEY_WALLET_ID));
-                                walletReference.delete()
-                                        .addOnSuccessListener(v -> {
-                                            DocumentReference userReference = database.collection(Constants.KEY_COLLECTION_USERS)
-                                                    .document(preferenceManager.getString(Constants.KEY_USER_ID));
-                                            userReference.delete()
-                                                    .addOnSuccessListener(task -> {
-                                                        preferenceManager.clear();
-                                                        activityManager.startActivity("signin");
-                                                        showToast("User deleted successfully");
-                                                    })
-                                                    .addOnFailureListener(e -> {
-                                                        showToast(e.getMessage());
-                                                    });
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            showToast(e.getMessage());
-                                        });
-                            })
-                            .addOnFailureListener(e -> {
-                                showToast(e.getMessage());
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    showToast(e.getMessage());
-                });
-    }
-
-    private void showToast(String m) {
-        Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
     }
 }
