@@ -75,7 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.delete.setVisibility(View.VISIBLE);
         });
         binding.back.setOnClickListener(v -> {
-            String lastActivity = preferenceManager.getString(Constants.KEY_LAST_SCREEN);
+            String lastActivity = preferenceManager.getString(Constants.KEY_LAST_ACTIVITY);
             activityManager.startActivity(lastActivity);
         });
     }

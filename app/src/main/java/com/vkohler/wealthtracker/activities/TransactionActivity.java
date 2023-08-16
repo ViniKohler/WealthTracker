@@ -52,7 +52,7 @@ public class TransactionActivity extends AppCompatActivity {
             activityManager.startActivity("data");
         });
         binding.addTransaction.setOnClickListener(v -> {
-            Toast.makeText(getApplicationContext(), preferenceManager.getString(Constants.KEY_LAST_SCREEN), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), activityManager.getLastActivity(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -63,7 +63,7 @@ public class TransactionActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String lastActivity = preferenceManager.getString(Constants.KEY_LAST_SCREEN);
+        String lastActivity = preferenceManager.getString(Constants.KEY_LAST_ACTIVITY);
         switch (lastActivity) {
             case "home":
                 binding.home.setColorFilter(ContextCompat.getColor(this, R.color.green));
@@ -77,6 +77,6 @@ public class TransactionActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        activityManager.startActivity(preferenceManager.getString(Constants.KEY_LAST_SCREEN));
+        activityManager.startActivity(preferenceManager.getString(Constants.KEY_LAST_ACTIVITY));
     }
 }

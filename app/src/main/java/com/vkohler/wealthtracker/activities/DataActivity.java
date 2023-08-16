@@ -25,7 +25,7 @@ public class DataActivity extends AppCompatActivity {
         logManager = new LogManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
 
-        preferenceManager.putString(Constants.KEY_LAST_SCREEN, "data");
+        activityManager.setLastActivity("data");
         overridePendingTransition(0, 0);
         setContentView(binding.getRoot());
 

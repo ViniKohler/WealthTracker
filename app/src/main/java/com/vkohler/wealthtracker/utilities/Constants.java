@@ -2,7 +2,7 @@ package com.vkohler.wealthtracker.utilities;
 
 public class Constants {
     public static final String KEY_PREFERENCE_NAME = "wealthTrackerPreference";
-    public static final String KEY_LAST_SCREEN = "lastScreen";
+    public static final String KEY_LAST_ACTIVITY = "lastActivity";
 
     public static final String KEY_COLLECTION_USERS = "users";
     public static final String KEY_USER_ID = "userId";

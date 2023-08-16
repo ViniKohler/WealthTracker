@@ -30,7 +30,7 @@ public class HomeActivity extends AppCompatActivity {
         logManager = new LogManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
 
-        preferenceManager.putString(Constants.KEY_LAST_SCREEN, "home");
+        activityManager.setLastActivity("home");
         overridePendingTransition(0, 0);
         setContentView(binding.getRoot());
 
