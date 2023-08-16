@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
-import com.vkohler.wealthtracker.databinding.ActivityNewTransactionBinding;
+import com.vkohler.wealthtracker.databinding.ActivityTransactionBinding;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.LogManager;
@@ -18,7 +18,7 @@ public class TransactionActivity extends AppCompatActivity {
     ActivityManager activityManager;
     LogManager logManager;
     PreferenceManager preferenceManager;
-    ActivityNewTransactionBinding binding;
+    ActivityTransactionBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class TransactionActivity extends AppCompatActivity {
         logManager = new LogManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
 
-        binding = ActivityNewTransactionBinding.inflate(getLayoutInflater());
+        binding = ActivityTransactionBinding.inflate(getLayoutInflater());
         overridePendingTransition(0, 0);
         setContentView(binding.getRoot());
 

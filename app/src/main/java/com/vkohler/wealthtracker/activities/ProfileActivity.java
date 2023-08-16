@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 
-import com.google.android.gms.tasks.Task;
-import com.vkohler.wealthtracker.databinding.ActivityMyProfileBinding;
+import com.vkohler.wealthtracker.databinding.ActivityProfileBinding;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.LogManager;
@@ -18,13 +17,13 @@ public class ProfileActivity extends AppCompatActivity {
     ActivityManager activityManager;
     LogManager logManager;
     PreferenceManager preferenceManager;
-    ActivityMyProfileBinding binding;
+    ActivityProfileBinding binding;
     private boolean isPasswordHidden = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMyProfileBinding.inflate(getLayoutInflater());
+        binding = ActivityProfileBinding.inflate(getLayoutInflater());
         activityManager = new ActivityManager(getApplicationContext());
         logManager = new LogManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
