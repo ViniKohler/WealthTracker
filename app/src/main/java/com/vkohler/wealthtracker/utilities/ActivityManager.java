@@ -2,6 +2,7 @@ package com.vkohler.wealthtracker.utilities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 import com.vkohler.wealthtracker.activities.DataActivity;
 import com.vkohler.wealthtracker.activities.HomeActivity;
@@ -42,6 +43,12 @@ public class ActivityManager {
         }
         Intent intent = new Intent(context, newActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+    }
+
+    public void startURLActivity(String URL) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

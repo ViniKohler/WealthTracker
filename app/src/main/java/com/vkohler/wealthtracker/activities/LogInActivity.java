@@ -40,8 +40,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private void setListeners() {
         binding.wealthTracker.setOnClickListener(v -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/ViniKohler"));
-            startActivity(browserIntent);
+            activityManager.startURLActivity("http://github.com/ViniKohler");
         });
 
         binding.createAccount.setOnClickListener(v -> {
