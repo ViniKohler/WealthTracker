@@ -55,18 +55,11 @@ public class ActivityManager {
     }
 
     public void startLastActivity() {
-        String lastActivity = preferenceManager.getString(Constants.KEY_LAST_ACTIVITY);
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(lastActivity));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        startActivity(preferenceManager.getString(Constants.KEY_LAST_ACTIVITY));
     }
 
     public void setLastActivity(String lastActivity) {
         preferenceManager.putString(Constants.KEY_LAST_ACTIVITY, lastActivity);
-    }
-
-    public String getLastActivity() {
-        return preferenceManager.getString(Constants.KEY_LAST_ACTIVITY);
     }
 
 }

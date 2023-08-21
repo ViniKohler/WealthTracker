@@ -1,10 +1,14 @@
 package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityTransactionBinding;
@@ -32,51 +36,77 @@ public class TransactionActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setListeners();
-        updateUI();
+        init();
     }
 
     private void setListeners() {
-        binding.name.setOnClickListener(v -> {
-            activityManager.startActivity("profile");
+        binding.back.setOnClickListener(v -> {
+            activityManager.startLastActivity();
         });
-        binding.logOut.setOnClickListener(v -> {
-            logManager.logOut();
+        binding.buttonPlus.setOnClickListener(v -> {
+            changeStrokeColor("green");
+            binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
+            binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
+            binding.addTransaction.setBackgroundColor(getResources().getColor(R.color.green));
+            binding.addTransaction.setVisibility(View.VISIBLE);
         });
-        binding.home.setOnClickListener(v -> {
-            activityManager.startActivity("home");
+        binding.buttonMinus.setOnClickListener(v -> {
+            changeStrokeColor("red");
+            binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red)));
+            binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
+            binding.addTransaction.setBackgroundColor(getResources().getColor(R.color.red));
+            binding.addTransaction.setVisibility(View.VISIBLE);
         });
-        binding.addButton.setOnClickListener(v -> {
-            onBackPressed();
-        });
-        binding.data.setOnClickListener(v -> {
-            activityManager.startActivity("data");
-        });
-        binding.addTransaction.setOnClickListener(v -> {
-            Toast.makeText(getApplicationContext(), activityManager.getLastActivity(), Toast.LENGTH_SHORT).show();
+
+        binding.swipeRefresh.setColorSchemeResources(R.color.no_color);
+        binding.swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.no_color);
+        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                activityManager.startLastActivity();
+            }
         });
     }
 
-    private void updateUI() {
-        try {
-            binding.name.setText(preferenceManager.getString(Constants.KEY_NAME));
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void changeStrokeColor(String color) {
+        int colorResource = 0;
+        Drawable backgroundDrawable = getResources().getDrawable(R.drawable.stroked_corner);
+        
+        switch (color) {
+            case "white":
+                colorResource = getResources().getColor(R.color.text_primary);
+                break;
+            case "red":
+                colorResource = getResources().getColor(R.color.red);
+                break;
+            case "green":
+                colorResource = getResources().getColor(R.color.green);
+                break;
         }
+        
+        if (backgroundDrawable instanceof GradientDrawable) {
+            GradientDrawable gradientDrawable = (GradientDrawable) backgroundDrawable;
+            gradientDrawable.setStroke(5, colorResource);
+            binding.button0.setBackground(gradientDrawable);
+            binding.button1.setBackground(gradientDrawable);
+            binding.button2.setBackground(gradientDrawable);
+            binding.button3.setBackground(gradientDrawable);
+            binding.button4.setBackground(gradientDrawable);
+            binding.button5.setBackground(gradientDrawable);
+            binding.button6.setBackground(gradientDrawable);
+            binding.button7.setBackground(gradientDrawable);
+            binding.button8.setBackground(gradientDrawable);
+            binding.button9.setBackground(gradientDrawable);
+        }
+    }
 
-        String lastActivity = preferenceManager.getString(Constants.KEY_LAST_ACTIVITY);
-        switch (lastActivity) {
-            case "home":
-                binding.home.setColorFilter(ContextCompat.getColor(this, R.color.green));
-                break;
-            case "data":
-                binding.data.setColorFilter(ContextCompat.getColor(this, R.color.green));
-                break;
-        }
+    private void init() {
+        changeStrokeColor("white");
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        activityManager.startActivity(preferenceManager.getString(Constants.KEY_LAST_ACTIVITY));
+        activityManager.startLastActivity();
     }
 }
