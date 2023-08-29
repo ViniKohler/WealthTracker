@@ -81,6 +81,7 @@ public class LogManager {
 
     public void logOn(String username, String name, String password, String confirmPassword) {
         if (authLogOn(username, name, password, confirmPassword)) {
+            showToast("Logging...");
             FirebaseFirestore database = FirebaseFirestore.getInstance();
             HashMap<String, Object> user = new HashMap<>();
             user.put(Constants.KEY_USERNAME, username);

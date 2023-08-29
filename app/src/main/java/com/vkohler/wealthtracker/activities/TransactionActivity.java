@@ -30,7 +30,8 @@ public class TransactionActivity extends AppCompatActivity {
     String strValue;
     BigDecimal bigValue;
     String signal;
-    String category;
+    String category = "default";
+    String dateTime = "default";
     final static int LIMIT_VALUE = 9;
 
     @Override
@@ -82,35 +83,35 @@ public class TransactionActivity extends AppCompatActivity {
             if (category != null && !strValue.isEmpty()) {
                 switch (signal) {
                     case "+":
-                        transactionManager.addTransaction(bigValue, category);
+                        transactionManager.addTransaction(bigValue, category, dateTime);
                         break;
                     case "-":
-                        transactionManager.addTransaction(bigValue.negate(), category);
+                        transactionManager.addTransaction(bigValue.negate(), category, dateTime);
                 }
                 binding.x.performClick();
             }
         });
 
-        binding.categoryHome.setOnClickListener(v -> {
-            category = "Rent";
-            updateUI();
-        });
-        binding.categoryElectricity.setOnClickListener(v -> {
-            category = "Electricity";
-            updateUI();
-        });
-        binding.categoryWater.setOnClickListener(v -> {
-            category = "Water";
-            updateUI();
-        });
-        binding.categoryGas.setOnClickListener(v -> {
-            category = "Gas";
-            updateUI();
-        });
-        binding.categoryInternet.setOnClickListener(v -> {
-            category = "Internet";
-            updateUI();
-        });
+//        binding.categoryHome.setOnClickListener(v -> {
+//            category = "Rent";
+//            updateUI();
+//        });
+//        binding.categoryElectricity.setOnClickListener(v -> {
+//            category = "Electricity";
+//            updateUI();
+//        });
+//        binding.categoryWater.setOnClickListener(v -> {
+//            category = "Water";
+//            updateUI();
+//        });
+//        binding.categoryGas.setOnClickListener(v -> {
+//            category = "Gas";
+//            updateUI();
+//        });
+//        binding.categoryInternet.setOnClickListener(v -> {
+//            category = "Internet";
+//            updateUI();
+//        });
         binding.button0.setOnClickListener(v -> {
             if (strValue.length() < LIMIT_VALUE && strValue.length() > 0) {
                 strValue += "0";
@@ -187,7 +188,8 @@ public class TransactionActivity extends AppCompatActivity {
         } else {
             binding.value.setText("0.00");
         }
-        if (!strValue.isEmpty() && signal != null && category != null) {
+//        if (!strValue.isEmpty() && signal != null && category != null) {
+        if (!strValue.isEmpty() && signal != null) {
             binding.addTransaction.setVisibility(View.VISIBLE);
         }
     }
