@@ -169,21 +169,22 @@ public class LogManager {
                 updateFieldAndShowToast(userReference, Constants.KEY_NAME, newName, "Name");
             }
 
-            if (!currentPassword.equals(newPassword)) {
-                if (!newPassword.equals(confirmNewPassword)) {
-                    showToast("Passwords are not the same");
-                } else {
-                    updateFieldAndShowToast(userReference, Constants.KEY_PASSWORD, newPassword, "Password");
-                }
+            if (!currentPassword.equals(newPassword) && newPassword.equals(confirmNewPassword)) {
+                updateFieldAndShowToast(userReference, Constants.KEY_PASSWORD, newPassword, "Password");
+            } else if (!currentPassword.equals(newPassword)) {
+                showToast("Passwords are not the same");
+            }
             }
         }
-    }
 
     private void updateFieldAndShowToast(DocumentReference userReference, String fieldKey, String newValue, String successMessage) {
         userReference.update(fieldKey, newValue)
                 .addOnSuccessListener(v -> {
                     preferenceManager.putString(fieldKey, newValue);
                     showToast(successMessage + " updated successfully");
+                })
+                .addOnCompleteListener(v -> {
+                    activityManager.startActivity("profile");
                 })
                 .addOnFailureListener(e -> {
                     showToast(e.getMessage());

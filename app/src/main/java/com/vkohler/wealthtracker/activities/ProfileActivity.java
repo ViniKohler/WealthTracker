@@ -48,27 +48,13 @@ public class ProfileActivity extends AppCompatActivity {
             binding.passwordHint.setVisibility(View.GONE);
             binding.passwordText.setText("password");
         });
-        binding.edit.setOnClickListener(v -> {
-            binding.editPanel.setVisibility(View.VISIBLE);
-            binding.edit.setVisibility(View.GONE);
-            binding.delete.setVisibility(View.GONE);
-        });
-        binding.update.setOnClickListener(v -> {
-            updateUser();
-        });
-        binding.cancelUpdate.setOnClickListener(v -> {
-            binding.editPanel.setVisibility(View.GONE);
-            binding.edit.setVisibility(View.VISIBLE);
-            binding.delete.setVisibility(View.VISIBLE);
-        });
+        binding.edit.setOnClickListener(v -> activityManager.startActivity("updateProfile"));
         binding.delete.setOnClickListener(v -> {
             binding.deletePanel.setVisibility(View.VISIBLE);
             binding.edit.setVisibility(View.GONE);
             binding.delete.setVisibility(View.GONE);
         });
-        binding.deleteUser.setOnClickListener(v -> {
-            logManager.deleteLog();
-        });
+        binding.deleteUser.setOnClickListener(v -> logManager.deleteLog());
         binding.cancelDelete.setOnClickListener(v -> {
             binding.deletePanel.setVisibility(View.GONE);
             binding.edit.setVisibility(View.VISIBLE);
@@ -80,35 +66,14 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUser() {
-        String newUsername = binding.newUsername.getText().toString();
-        String newName = binding.newName.getText().toString();
-        String newPassword = binding.newPassword.getText().toString();
-        String confirmNewPassword = binding.newConfirmPassword.getText().toString();
-
-        logManager.updateLog(newUsername, newName, newPassword, confirmNewPassword);
-
-        updateUI();
-
-        binding.editPanel.setVisibility(View.GONE);
-        binding.edit.setVisibility(View.VISIBLE);
-        binding.delete.setVisibility(View.VISIBLE);
-    }
-
     private void updateUI() {
-        String currentUsername = preferenceManager.getString(Constants.KEY_USERNAME);
         String currentName = preferenceManager.getString(Constants.KEY_NAME);
+        String currentUsername = preferenceManager.getString(Constants.KEY_USERNAME);
         String currentPassword = preferenceManager.getString(Constants.KEY_PASSWORD);
 
         binding.name.setText(currentName);
         binding.username.setText(currentUsername);
-        binding.name.setText(currentName);
         binding.password.setText(currentPassword);
-
-        binding.newUsername.setText(currentUsername);
-        binding.newPassword.setText(currentPassword);
-        binding.newName.setText(currentName);
-        binding.newConfirmPassword.setText(currentPassword);
 
         if (preferenceManager.getString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL).equals("done")) {
             binding.passwordHint.setVisibility(View.GONE);

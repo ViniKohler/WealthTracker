@@ -181,14 +181,16 @@ public class TransactionActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        if (!Objects.equals(strValue, "")) {
+        //TODO:
+        // verificar a condição if abaixo.
+        // Se não funcionar, trocar por strValue.equals("")
+        if (!strValue.isEmpty()) {
             bigValue = new BigDecimal(strValue).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
             binding.value.setText(String.valueOf(bigValue));
             binding.x.setVisibility(View.VISIBLE);
         } else {
             binding.value.setText("0.00");
         }
-//        if (!strValue.isEmpty() && signal != null && category != null) {
         if (!strValue.isEmpty() && signal != null) {
             binding.addTransaction.setVisibility(View.VISIBLE);
         }

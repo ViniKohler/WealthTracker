@@ -9,6 +9,7 @@ import com.vkohler.wealthtracker.activities.HomeActivity;
 import com.vkohler.wealthtracker.activities.LogInActivity;
 import com.vkohler.wealthtracker.activities.LogOnActivity;
 import com.vkohler.wealthtracker.activities.ProfileActivity;
+import com.vkohler.wealthtracker.activities.ProfileUpdateActivity;
 import com.vkohler.wealthtracker.activities.TransactionActivity;
 
 public class ActivityManager {
@@ -41,6 +42,9 @@ public class ActivityManager {
                 break;
             case "profile":
                 newActivity = ProfileActivity.class;
+                break;
+            case "updateProfile":
+                newActivity = ProfileUpdateActivity.class;
                 break;
         }
         Intent intent = new Intent(context, newActivity);
