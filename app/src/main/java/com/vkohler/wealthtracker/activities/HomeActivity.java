@@ -2,17 +2,24 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
+import com.vkohler.wealthtracker.adapters.TransactionAdapter;
 import com.vkohler.wealthtracker.databinding.ActivityHomeBinding;
+import com.vkohler.wealthtracker.models.Transaction;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.LogManager;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
+import com.vkohler.wealthtracker.utilities.TransactionManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -20,7 +27,9 @@ public class HomeActivity extends AppCompatActivity {
     ActivityManager activityManager;
     LogManager logManager;
     PreferenceManager preferenceManager;
+    TransactionManager transactionManager;
     ActivityHomeBinding binding;
+    private TransactionAdapter transactionAdapter;
     boolean isBalanceVisible = true;
 
     @Override
@@ -30,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         activityManager = new ActivityManager(getApplicationContext());
         logManager = new LogManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
+        transactionManager = new TransactionManager(getApplicationContext());
 
         activityManager.setLastActivity("home");
         overridePendingTransition(0, 0);
@@ -37,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
 
         setListeners();
         updateUI();
+        updateRecycleView();
     }
 
     private void setListeners() {
@@ -68,6 +79,7 @@ public class HomeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private void changeVisibility() {
@@ -86,6 +98,19 @@ public class HomeActivity extends AppCompatActivity {
             binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
             isBalanceVisible = true;
         }
+    }
+
+    private void updateRecycleView() {
+        binding.transactionsRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        List<Transaction> transactions = new ArrayList<>();
+
+        transactions.add(new Transaction("Transaction 1", "Category 1", "100"));
+        transactions.add(new Transaction("Transaction 2", "Category 2", "200"));
+
+//        transactions = transactionManager.getTransactions();
+
+        transactionAdapter = new TransactionAdapter(transactions);
+        binding.transactionsRecycleView.setAdapter(transactionAdapter);
     }
 
     @Override

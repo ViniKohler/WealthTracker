@@ -92,26 +92,6 @@ public class TransactionActivity extends AppCompatActivity {
             }
         });
 
-//        binding.categoryHome.setOnClickListener(v -> {
-//            category = "Rent";
-//            updateUI();
-//        });
-//        binding.categoryElectricity.setOnClickListener(v -> {
-//            category = "Electricity";
-//            updateUI();
-//        });
-//        binding.categoryWater.setOnClickListener(v -> {
-//            category = "Water";
-//            updateUI();
-//        });
-//        binding.categoryGas.setOnClickListener(v -> {
-//            category = "Gas";
-//            updateUI();
-//        });
-//        binding.categoryInternet.setOnClickListener(v -> {
-//            category = "Internet";
-//            updateUI();
-//        });
         binding.button0.setOnClickListener(v -> {
             if (strValue.length() < LIMIT_VALUE && strValue.length() > 0) {
                 strValue += "0";
