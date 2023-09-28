@@ -51,7 +51,7 @@
         android:text="$"
         android:layout_marginEnd="2dp"
         android:textColor="@color/text_primary"
-        android:textSize="16dp"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="@id/value"
         app:layout_constraintEnd_toStartOf="@id/value"
         app:layout_constraintTop_toTopOf="@id/value" />

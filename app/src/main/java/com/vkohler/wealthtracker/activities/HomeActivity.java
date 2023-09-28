@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.adapters.TransactionAdapter;
 import com.vkohler.wealthtracker.databinding.ActivityHomeBinding;
+import com.vkohler.wealthtracker.interfaces.TransactionCallback;
 import com.vkohler.wealthtracker.models.Transaction;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
@@ -18,7 +19,7 @@ import com.vkohler.wealthtracker.utilities.LogManager;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 import com.vkohler.wealthtracker.utilities.TransactionManager;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 
@@ -46,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
 
         setListeners();
         updateUI();
-        updateRecycleView();
+        updateRecyclerView();
     }
 
     private void setListeners() {
@@ -110,17 +111,21 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void updateRecycleView() {
+    private void updateRecyclerView() {
         binding.transactionsRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        List<Transaction> transactions = new ArrayList<>();
 
-        transactions.add(new Transaction("Transaction 1", "Category 1", "100"));
-        transactions.add(new Transaction("Transaction 2", "Category 2", "200"));
+        transactionManager.getTransactions(new TransactionCallback() {
+            @Override
+            public void onTransactionsLoaded(List<Transaction> transactions) {
+                transactionAdapter = new TransactionAdapter(transactions);
+                binding.transactionsRecycleView.setAdapter(transactionAdapter);
+            }
 
-//        transactions = transactionManager.getTransactions();
-
-        transactionAdapter = new TransactionAdapter(transactions);
-        binding.transactionsRecycleView.setAdapter(transactionAdapter);
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

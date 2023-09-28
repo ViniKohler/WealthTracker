@@ -11,12 +11,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.vkohler.wealthtracker.interfaces.TransactionCallback;
 import com.vkohler.wealthtracker.models.Transaction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +38,7 @@ public class TransactionManager {
         preferenceManager = new PreferenceManager(context);
     }
 
-    public void addTransaction(BigDecimal bigValue, String category, String dateTime) {
+    public void addTransaction(String title, BigDecimal bigValue, String category, Date dateTime) {
         String strBalance = preferenceManager.getString(Constants.KEY_BALANCE);
         BigDecimal bigBalance = new BigDecimal(strBalance);
         bigBalance = bigBalance.add(bigValue);
@@ -42,10 +48,10 @@ public class TransactionManager {
 
         HashMap<String, Object> transaction = new HashMap<>();
         transaction.put(Constants.KEY_WALLET_ID, preferenceManager.getString(Constants.KEY_WALLET_ID));
+        transaction.put(Constants.KEY_TRANSACTION_TITLE, title);
         transaction.put(Constants.KEY_TRANSACTION_VALUE, String.valueOf(bigValue));
         transaction.put(Constants.KEY_TRANSACTION_CATEGORY, category);
         transaction.put(Constants.KEY_TRANSACTION_DATETIME, dateTime);
-        BigDecimal finalBigBalance = bigBalance;
 
         database.collection(Constants.KEY_COLLECTION_TRANSACTIONS)
                 .add(transaction)
@@ -72,7 +78,7 @@ public class TransactionManager {
                 });
     }
 
-    public List<Transaction> getTransactions() {
+    public List<Transaction> getTransactions(TransactionCallback callback) {
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String walletId = preferenceManager.getString(Constants.KEY_WALLET_ID);
@@ -88,14 +94,27 @@ public class TransactionManager {
                             Transaction transaction = documentSnapshot.toObject(Transaction.class);
                             transactions.add(transaction);
                         }
+                        transactions.sort(new Comparator<Transaction>() {
+                            @Override
+                            public int compare(Transaction t1, Transaction t2) {
+                                return t2.getDateTime().compareTo(t1.getDateTime());
+                            }
+                        });
+
+                        callback.onTransactionsLoaded(transactions);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "Transactions Error. " + e, Toast.LENGTH_SHORT).show();
+                        callback.onError("Error while getting transactions");
                     }
                 });
+
+        //Verifique se a lista está vazia ou não aqui
+
+        //Organize a lista aqui
+
         return transactions;
     }
 }

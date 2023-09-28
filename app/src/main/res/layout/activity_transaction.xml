@@ -253,6 +253,19 @@
 
             </LinearLayout>
 
+            <ImageView
+                android:id="@+id/backspace"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:padding="7dp"
+                android:src="@drawable/ic_backspace"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/inputContainer"
+                app:layout_constraintTop_toTopOf="@id/inputContainer"
+                app:tint="@color/text_primary" />
+
             <Button
                 android:id="@+id/addTransaction"
                 android:layout_width="wrap_content"
@@ -261,7 +274,7 @@
                 android:backgroundTint="@color/green"
                 android:text="Add Transaction"
                 android:textColor="@color/white"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

@@ -1,7 +1,10 @@
 package com.vkohler.wealthtracker.models;
 
+import java.util.Date;
+
 public class Transaction {
-    private String walletId, title, category, value, dateTime;
+    private String walletId, title, category, value;
+    private Date dateTime;
 
     public Transaction() {
     }
@@ -22,5 +25,9 @@ public class Transaction {
 
     public String getValue() {
         return value;
+    }
+
+    public Date getDateTime() {
+        return dateTime;
     }
 }

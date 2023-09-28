@@ -18,6 +18,8 @@ import com.vkohler.wealthtracker.utilities.TransactionManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 public class TransactionActivity extends AppCompatActivity {
@@ -27,11 +29,12 @@ public class TransactionActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
     TransactionManager transactionManager;
     ActivityTransactionBinding binding;
+    String title = "Title";
     String strValue;
     BigDecimal bigValue;
     String signal;
-    String category = "default";
-    String dateTime = "default";
+    String category = "Category";
+    Date dateTime = new Date();
     final static int LIMIT_VALUE = 9;
 
     @Override
@@ -59,11 +62,14 @@ public class TransactionActivity extends AppCompatActivity {
             signal = null;
             category = null;
             updateUI();
-            binding.x.setVisibility(View.GONE);
             changeStrokeColor("white");
             binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
             binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
             binding.addTransaction.setVisibility(View.GONE);
+        });
+        binding.backspace.setOnClickListener(v -> {
+            strValue = strValue.substring(0, strValue.length() - 1);
+            updateUI();
         });
         binding.buttonPlus.setOnClickListener(v -> {
             changeStrokeColor("green");
@@ -83,10 +89,10 @@ public class TransactionActivity extends AppCompatActivity {
             if (category != null && !strValue.isEmpty()) {
                 switch (signal) {
                     case "+":
-                        transactionManager.addTransaction(bigValue, category, dateTime);
+                        transactionManager.addTransaction(title, bigValue, category, dateTime);
                         break;
                     case "-":
-                        transactionManager.addTransaction(bigValue.negate(), category, dateTime);
+                        transactionManager.addTransaction(title, bigValue.negate(), category, dateTime);
                 }
                 binding.x.performClick();
             }
@@ -161,16 +167,18 @@ public class TransactionActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        //TODO:
-        // verificar a condição if abaixo.
-        // Se não funcionar, trocar por strValue.equals("")
+
         if (!strValue.isEmpty()) {
             bigValue = new BigDecimal(strValue).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
             binding.value.setText(String.valueOf(bigValue));
             binding.x.setVisibility(View.VISIBLE);
+            binding.backspace.setVisibility(View.VISIBLE);
         } else {
             binding.value.setText("0.00");
+            binding.backspace.setVisibility(View.GONE);
+            binding.x.setVisibility(View.GONE);
         }
+
         if (!strValue.isEmpty() && signal != null) {
             binding.addTransaction.setVisibility(View.VISIBLE);
         }
@@ -181,6 +189,7 @@ public class TransactionActivity extends AppCompatActivity {
         binding.swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.no_color);
         changeStrokeColor("white");
         strValue = "";
+        updateUI();
     }
 
     private void changeStrokeColor(String color) {

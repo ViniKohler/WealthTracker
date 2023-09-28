@@ -30,7 +30,7 @@ public class LogManager {
 
     public void logIn(String username, String password) {
         if (authLogIn(username, password)) {
-            showToast("Logging in");
+            showToast("Logging in...");
             FirebaseFirestore database = FirebaseFirestore.getInstance();
 
             database.collection(Constants.KEY_COLLECTION_USERS)
@@ -84,7 +84,7 @@ public class LogManager {
 
     public void logOn(String username, String name, String password, String confirmPassword) {
         if (authLogOn(username, name, password, confirmPassword)) {
-            showToast("Logging...");
+            showToast("Logging on...");
             FirebaseFirestore database = FirebaseFirestore.getInstance();
             HashMap<String, Object> user = new HashMap<>();
             user.put(Constants.KEY_USERNAME, username);
