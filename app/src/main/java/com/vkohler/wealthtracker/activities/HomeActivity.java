@@ -30,7 +30,6 @@ public class HomeActivity extends AppCompatActivity {
     TransactionManager transactionManager;
     ActivityHomeBinding binding;
     private TransactionAdapter transactionAdapter;
-    boolean isBalanceVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,27 +75,38 @@ public class HomeActivity extends AppCompatActivity {
         try {
             binding.name.setText(preferenceManager.getString(Constants.KEY_NAME));
             binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
+            changeVisibility();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void changeVisibility() {
-        if (isBalanceVisible) {
-            binding.visibility.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red)));
-            binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.red));
+        Boolean visibility = preferenceManager.getBoolean(Constants.KEY_IS_BALANCE_VISIBLE);
+        if (visibility) {
+            binding.visibility.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.text_secondary)));
+            binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary));
             binding.balance.setTextColor(getResources().getColor(R.color.text_secondary));
             binding.currency.setTextColor(getResources().getColor(R.color.text_secondary));
             binding.balance.setText("••••");
-            isBalanceVisible = false;
+            binding.currency.setText("$ ");
+            preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, false);
         } else {
-            binding.visibility.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
-            binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.green));
+            String balance = preferenceManager.getString(Constants.KEY_BALANCE);
+            if (!balance.contains("-")) {
+                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
+                binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.green));
+                binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
+                binding.currency.setText("$ ");
+            } else {
+                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red)));
+                binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.red));
+                binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE).replace("-", ""));
+                binding.currency.setText("-$ ");
+            }
             binding.balance.setTextColor(getResources().getColor(R.color.text_primary));
             binding.currency.setTextColor(getResources().getColor(R.color.text_primary));
-            binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
-            isBalanceVisible = true;
+            preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, true);
         }
     }
 

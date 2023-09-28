@@ -21,6 +21,7 @@ public class Constants {
     public static final String KEY_TRANSACTION_VALUE = "value";
     public static final String KEY_TRANSACTION_DATETIME = "datetime";
 
+    public static final String KEY_IS_BALANCE_VISIBLE = "isBalanceVisible";
     public static final String KEY_PASSWORD_VISIBILITY_TUTORIAL = "tutorial";
 
 }
