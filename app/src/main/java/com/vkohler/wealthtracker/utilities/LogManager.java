@@ -1,6 +1,7 @@
 package com.vkohler.wealthtracker.utilities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
@@ -10,6 +11,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.vkohler.wealthtracker.activities.LogInActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,6 +94,7 @@ public class LogManager {
                     .add(user)
                     .addOnSuccessListener(userReference -> {
 
+                        preferenceManager.putBoolean(Constants.KEY_IS_LOGGED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID, userReference.getId());
                         preferenceManager.putString(Constants.KEY_USERNAME, username);
                         preferenceManager.putString(Constants.KEY_NAME, name);
@@ -176,8 +179,8 @@ public class LogManager {
             } else if (!currentPassword.equals(newPassword)) {
                 showToast("Passwords are not the same");
             }
-            }
         }
+    }
 
     private void updateFieldAndShowToast(DocumentReference userReference, String fieldKey, String newValue, String successMessage) {
         userReference.update(fieldKey, newValue)
@@ -218,8 +221,7 @@ public class LogManager {
                                                     .document(preferenceManager.getString(Constants.KEY_USER_ID));
                                             userReference.delete()
                                                     .addOnSuccessListener(task -> {
-                                                        preferenceManager.clear();
-                                                        activityManager.startActivity("logIn");
+                                                        logOut();
                                                         showToast("User deleted successfully");
                                                     })
                                                     .addOnFailureListener(e -> {
@@ -238,6 +240,7 @@ public class LogManager {
                     showToast(e.getMessage());
                 });
     }
+
     private void showToast(String m) {
         Toast.makeText(context, m, Toast.LENGTH_SHORT).show();
     }
