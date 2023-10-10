@@ -32,18 +32,24 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
+        int background;
+
         Transaction transaction = transactionList.get(position);
+
+        String value = transaction.getValue();
+
+        if (new BigDecimal(value).compareTo(BigDecimal.ZERO) < 0) { // if == 0 return 0; if > 0 return 1; if < 0 return 2
+            background = R.drawable.category_red_background;
+            holder.currency.setText("- $");
+        } else {
+            background = R.drawable.category_green_background;
+        }
+
+        holder.categoryIcon.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), background));
+
         holder.title.setText(transaction.getTitle());
         holder.category.setText(transaction.getCategory());
-        holder.value.setText(String.valueOf(transaction.getValue()));
-        int background;
-        int temp = new BigDecimal(transaction.getValue().toString()).compareTo(BigDecimal.ZERO);
-        if (temp == 1) {
-            background = R.drawable.category_green_background;
-        } else {
-            background = R.drawable.category_red_background;
-        }
-        holder.categoryIcon.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), background));
+        holder.value.setText(value.replace("-", ""));
     }
 
     @Override
@@ -52,7 +58,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public class TransactionViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, category, value;
+        public TextView title, category, currency, value;
         public ImageView categoryIcon;
 
         public TransactionViewHolder(View itemView) {
@@ -60,6 +66,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             title = itemView.findViewById(R.id.title);
             category = itemView.findViewById(R.id.category);
             categoryIcon = itemView.findViewById(R.id.categoryIcon);
+            currency = itemView.findViewById(R.id.currency);
             value = itemView.findViewById(R.id.value);
         }
     }
