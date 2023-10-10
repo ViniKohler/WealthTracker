@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityTransactionBinding;
@@ -29,11 +30,10 @@ public class TransactionActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
     TransactionManager transactionManager;
     ActivityTransactionBinding binding;
-    String title = "Title";
+    String title, category;
     String strValue;
     BigDecimal bigValue;
     String signal;
-    String category = "Category";
     Date dateTime = new Date();
     final static int LIMIT_VALUE = 9;
 
@@ -54,6 +54,17 @@ public class TransactionActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
+        binding.inputValueTrigger.setOnClickListener(v -> {
+            title = binding.title.getText().toString();
+            category = binding.category.getText().toString();
+            if (!title.isEmpty() && !category.isEmpty()) {
+                binding.detailsContainer.setVisibility(View.GONE);
+                binding.valueContainer.setVisibility(View.VISIBLE);
+            } else {
+                Toast.makeText(this, "Transaction must have a title and a category", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         binding.back.setOnClickListener(v -> {
             activityManager.startLastActivity();
         });
