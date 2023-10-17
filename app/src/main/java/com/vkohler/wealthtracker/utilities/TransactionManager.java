@@ -59,6 +59,8 @@ public class TransactionManager {
                     DocumentReference walletReference = database.collection(Constants.KEY_COLLECTION_WALLETS)
                             .document(preferenceManager.getString(Constants.KEY_WALLET_ID));
 
+                    Toast.makeText(context, "Transaction created successfully!", Toast.LENGTH_SHORT).show();
+
                     Map<String, Object> updateMap = new HashMap<>();
                     updateMap.put(Constants.KEY_BALANCE, strFinalBalance.toString());
                     walletReference.update(updateMap)
