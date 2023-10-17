@@ -1,7 +1,6 @@
 package com.vkohler.wealthtracker.utilities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
@@ -11,7 +10,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.vkohler.wealthtracker.activities.LogInActivity;
+import com.vkohler.wealthtracker.interfaces.LogCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class LogManager {
         preferenceManager = new PreferenceManager(context);
     }
 
-    public void logIn(String username, String password) {
+    public void logIn(String username, String password, LogCallback callback) {
         if (authLogIn(username, password)) {
             showToast("Logging in...");
             FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -59,12 +58,14 @@ public class LogManager {
 
                                         preferenceManager.putString(Constants.KEY_WALLET_ID, walletSnapshot.getId());
                                         preferenceManager.putString(Constants.KEY_BALANCE, walletSnapshot.getString(Constants.KEY_BALANCE));
+                                        callback.actionDone();
                                     })
                                     .addOnCompleteListener(completeTask -> {
                                         activityManager.startActivity("home");
                                     });
                         } else {
                             showToast("Unable to login");
+                            callback.actionDone();
                         }
                     });
         }
@@ -82,7 +83,7 @@ public class LogManager {
         }
     }
 
-    public void logOn(String username, String name, String password, String confirmPassword) {
+    public void logOn(String username, String name, String password, String confirmPassword, LogCallback callback) {
         if (authLogOn(username, name, password, confirmPassword)) {
             showToast("Logging on...");
             FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -112,8 +113,11 @@ public class LogManager {
                                     preferenceManager.putString(Constants.KEY_WALLET_ID, walletReference.getId());
                                     preferenceManager.putString(Constants.KEY_BALANCE, "0.00");
 
+                                    callback.actionDone();
+
                                     activityManager.startActivity("home");
                                 }).addOnFailureListener(e -> {
+                                    callback.actionDone();
                                     showToast("Unable to logon");
                                     showToast(e.getMessage());
                                     logOut();

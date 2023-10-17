@@ -2,11 +2,11 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 
 import com.vkohler.wealthtracker.databinding.ActivityLogInBinding;
+import com.vkohler.wealthtracker.interfaces.LogCallback;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.LogManager;
@@ -48,7 +48,17 @@ public class LogInActivity extends AppCompatActivity {
         });
 
         binding.logIn.setOnClickListener(v -> {
-                logManager.logIn(binding.username.getText().toString(), binding.password.getText().toString());
+            binding.logIn.setVisibility(View.GONE);
+            binding.progressBar.setVisibility(View.VISIBLE);
+
+            logManager.logIn(binding.username.getText().toString(), binding.password.getText().toString(), new LogCallback() {
+                @Override
+                public void actionDone() {
+                    binding.logIn.setVisibility(View.VISIBLE);
+                    binding.progressBar.setVisibility(View.GONE);
+                }
+            });
+
         });
     }
 }

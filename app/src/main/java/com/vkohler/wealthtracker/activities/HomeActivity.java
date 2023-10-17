@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
@@ -119,6 +120,14 @@ public class HomeActivity extends AppCompatActivity {
             public void onTransactionsLoaded(List<Transaction> transactions) {
                 transactionAdapter = new TransactionAdapter(transactions);
                 binding.transactionsRecycleView.setAdapter(transactionAdapter);
+
+                if (transactions.isEmpty()) {
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.notFound.setVisibility(View.VISIBLE);
+                } else {
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.notFound.setVisibility(View.GONE);
+                }
             }
 
             @Override
