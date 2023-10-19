@@ -1,5 +1,7 @@
 package com.vkohler.wealthtracker.adapters;
 
+import android.content.Context;
+import android.graphics.drawable.Icon;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +10,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.IconCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.rpc.context.AttributeContext;
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.models.Transaction;
 
@@ -33,7 +37,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         int background;
-
+        Context context = holder.itemView.getContext();
+        IconCompat icon = IconCompat.createWithResource(context, R.drawable.ic_dollar);
         Transaction transaction = transactionList.get(position);
 
         String value = transaction.getValue();
@@ -45,8 +50,56 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             background = R.drawable.category_green_background;
         }
 
-        holder.categoryIcon.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), background));
+        switch (transaction.getCategory()) {
+            case "Bill":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_bill);
+                break;
+            case "Clothing":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_clothing);
+                break;
+            case "Debts":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_debt);
+                break;
+            case "Education":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_education);
+                break;
+            case "Entertainment":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_entertainment);
+                break;
+            case "Food":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_food);
+                break;
+            case "Health":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_health);
+                break;
+            case "Insurance":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_insurance);
+                break;
+            case "Investment":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_investment);
+                break;
+            case "Maintenance":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_maintenance);
+                break;
+            case "Salary":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_dollar);
+                break;
+            case "Savings":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_savings);
+                break;
+            case "Taxes":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_tax);
+                break;
+            case "Transport":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_transport);
+                break;
+            case "Traveling":
+                icon = IconCompat.createWithResource(context, R.drawable.ic_traveling);
+                break;
+        }
 
+        holder.categoryIcon.setBackground(ContextCompat.getDrawable(context, background));
+        holder.categoryIcon.setImageIcon(icon.toIcon().setTint(ContextCompat.getColor(context, R.color.text_primary)));
         holder.title.setText(transaction.getTitle());
         holder.category.setText(transaction.getCategory());
         holder.value.setText(value.replace("-", ""));

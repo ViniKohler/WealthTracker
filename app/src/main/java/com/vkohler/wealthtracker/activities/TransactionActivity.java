@@ -3,11 +3,13 @@ package com.vkohler.wealthtracker.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
@@ -53,7 +55,15 @@ public class TransactionActivity extends AppCompatActivity {
         init();
     }
 
+
     private void setListeners() {
+        binding.category.setOnClickListener(v -> {
+            String[] categories = {"Bill", "Clothing", "Debts", "Education", "Entertainment", "Food", "Health", "Insurance", "Investment", "Maintenance", "Salary", "Savings", "Taxes", "Transport", "Traveling"};
+            ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(TransactionActivity.this, android.R.layout.simple_dropdown_item_1line, categories);
+            binding.category.setAdapter(categoryAdapter);
+            binding.category.showDropDown();
+        });
+
         binding.inputValueTrigger.setOnClickListener(v -> {
             title = binding.title.getText().toString();
             category = binding.category.getText().toString();
