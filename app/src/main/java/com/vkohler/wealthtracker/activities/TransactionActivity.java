@@ -1,18 +1,18 @@
 package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
+import com.vkohler.wealthtracker.adapters.CategoryAdapter;
 import com.vkohler.wealthtracker.databinding.ActivityTransactionBinding;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.LogManager;
@@ -21,9 +21,8 @@ import com.vkohler.wealthtracker.utilities.TransactionManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.Objects;
 
 public class TransactionActivity extends AppCompatActivity {
 
@@ -32,10 +31,8 @@ public class TransactionActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
     TransactionManager transactionManager;
     ActivityTransactionBinding binding;
-    String title, category;
-    String strValue;
+    String title, category, signal, strValue;
     BigDecimal bigValue;
-    String signal;
     Date dateTime = new Date();
     final static int LIMIT_VALUE = 9;
 
@@ -57,24 +54,6 @@ public class TransactionActivity extends AppCompatActivity {
 
 
     private void setListeners() {
-        binding.category.setOnClickListener(v -> {
-            String[] categories = {"Bill", "Clothing", "Debts", "Education", "Entertainment", "Food", "Health", "Insurance", "Investment", "Maintenance", "Salary", "Savings", "Taxes", "Transport", "Traveling"};
-            ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(TransactionActivity.this, android.R.layout.simple_dropdown_item_1line, categories);
-            binding.category.setAdapter(categoryAdapter);
-            binding.category.showDropDown();
-        });
-
-        binding.inputValueTrigger.setOnClickListener(v -> {
-            title = binding.title.getText().toString();
-            category = binding.category.getText().toString();
-            if (!title.isEmpty() && !category.isEmpty()) {
-                binding.detailsContainer.setVisibility(View.GONE);
-                binding.valueContainer.setVisibility(View.VISIBLE);
-            } else {
-                Toast.makeText(this, "Transaction must have a title and a category", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         binding.back.setOnClickListener(v -> {
             activityManager.startLastActivity();
         });
@@ -116,6 +95,8 @@ public class TransactionActivity extends AppCompatActivity {
                         transactionManager.addTransaction(title, bigValue.negate(), category, dateTime);
                 }
                 binding.x.performClick();
+            } else if (category == null) {
+                Toast.makeText(this, "No category :/", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -210,6 +191,7 @@ public class TransactionActivity extends AppCompatActivity {
         binding.swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.no_color);
         changeStrokeColor("white");
         strValue = "";
+        updateRecyclerView();
         updateUI();
     }
 
@@ -247,6 +229,15 @@ public class TransactionActivity extends AppCompatActivity {
         }
     }
 
+    private void updateRecyclerView() {
+        String[] categoryList = {"Bill", "Clothing", "Debts", "Education", "Entertainment", "Food", "Health", "Insurance", "Investment", "Maintenance", "Salary", "Savings", "Taxes", "Transport", "Traveling"};
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        binding.categoryRecyclerView.setLayoutManager(layoutManager);
+
+        CategoryAdapter adapter = new CategoryAdapter(Arrays.asList(categoryList));
+        binding.categoryRecyclerView.setAdapter(adapter);
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();

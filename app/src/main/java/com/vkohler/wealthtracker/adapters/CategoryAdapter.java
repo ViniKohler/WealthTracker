@@ -9,114 +9,111 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.vkohler.wealthtracker.R;
-import com.vkohler.wealthtracker.models.Transaction;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
-    private List<Transaction> transactionList;
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
-    public TransactionAdapter(List<Transaction> transactionList) {
-        this.transactionList = transactionList;
-    }
-
-    @NonNull
-    @Override
-    public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_transaction, parent, false);
-        return new TransactionViewHolder(view);
+    private List<String> categoryList;
+    private String categoryName;
+    public CategoryAdapter(List<String> categoryList) {
+        this.categoryList = categoryList;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
-        int background;
+    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_category, parent, false);
+        return new CategoryViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(CategoryViewHolder holder, int position) {
         Context context = holder.itemView.getContext();
-        Icon icon = Icon.createWithResource(context, R.drawable.ic_dollar);
-        Transaction transaction = transactionList.get(position);
+        String category = categoryList.get(position);
+        Icon icon = null;
 
-        String value = transaction.getValue();
-
-        if (new BigDecimal(value).compareTo(BigDecimal.ZERO) < 0) { // if == 0 return 0; if > 0 return 1; if < 0 return 2
-            background = R.drawable.category_red_background;
-            holder.currency.setText("- $");
-        } else {
-            background = R.drawable.category_green_background;
-        }
-
-        switch (transaction.getCategory()) {
+        switch (category) {
             case "Bill":
                 icon = Icon.createWithResource(context, R.drawable.ic_bill);
+                categoryName = "Bill";
                 break;
             case "Clothing":
                 icon = Icon.createWithResource(context, R.drawable.ic_clothing);
+                categoryName = "Clothing";
                 break;
             case "Debts":
                 icon = Icon.createWithResource(context, R.drawable.ic_debt);
+                categoryName = "Debts";
                 break;
             case "Education":
                 icon = Icon.createWithResource(context, R.drawable.ic_education);
+                categoryName = "Education";
                 break;
             case "Entertainment":
                 icon = Icon.createWithResource(context, R.drawable.ic_entertainment);
+                categoryName = "Entertainment";
                 break;
             case "Food":
                 icon = Icon.createWithResource(context, R.drawable.ic_food);
+                categoryName = "Food";
                 break;
             case "Health":
                 icon = Icon.createWithResource(context, R.drawable.ic_health);
+                categoryName = "Health";
                 break;
             case "Insurance":
                 icon = Icon.createWithResource(context, R.drawable.ic_insurance);
+                categoryName = "Insurance";
                 break;
             case "Investment":
                 icon = Icon.createWithResource(context, R.drawable.ic_investment);
+                categoryName = "Investment";
                 break;
             case "Maintenance":
                 icon = Icon.createWithResource(context, R.drawable.ic_maintenance);
+                categoryName = "Maintenance";
                 break;
             case "Salary":
                 icon = Icon.createWithResource(context, R.drawable.ic_dollar);
+                categoryName = "Salary";
                 break;
             case "Savings":
                 icon = Icon.createWithResource(context, R.drawable.ic_savings);
+                categoryName = "Savings";
                 break;
             case "Taxes":
                 icon = Icon.createWithResource(context, R.drawable.ic_tax);
+                categoryName = "Taxes";
                 break;
             case "Transport":
                 icon = Icon.createWithResource(context, R.drawable.ic_transport);
+                categoryName = "Transport";
                 break;
             case "Traveling":
                 icon = Icon.createWithResource(context, R.drawable.ic_traveling);
+                categoryName = "Traveling";
                 break;
         }
-
-        holder.categoryIcon.setBackground(ContextCompat.getDrawable(context, background));
-        holder.categoryIcon.setImageIcon(icon.setTint(ContextCompat.getColor(context, R.color.text_primary)));
-        holder.category.setText(transaction.getCategory());
-        holder.value.setText(value.replace("-", ""));
+        holder.categoryIcon.setImageIcon(icon);
+        holder.categoryName.setText(categoryName);
     }
 
     @Override
     public int getItemCount() {
-        return transactionList.size();
+        return categoryList.size();
     }
 
-    public class TransactionViewHolder extends RecyclerView.ViewHolder {
-        public TextView category, currency, value;
+    public class CategoryViewHolder extends RecyclerView.ViewHolder {
         public ImageView categoryIcon;
+        public TextView categoryName;
 
-        public TransactionViewHolder(View itemView) {
+        public CategoryViewHolder(View itemView) {
             super(itemView);
-            category = itemView.findViewById(R.id.category);
             categoryIcon = itemView.findViewById(R.id.categoryIcon);
-            currency = itemView.findViewById(R.id.currency);
-            value = itemView.findViewById(R.id.value);
+            categoryName = itemView.findViewById(R.id.categoryName);
         }
     }
 

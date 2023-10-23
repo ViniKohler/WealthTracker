@@ -113,13 +113,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void updateRecyclerView() {
-        binding.transactionsRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        binding.transactionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         transactionManager.getTransactions(new TransactionCallback() {
             @Override
             public void onTransactionsLoaded(List<Transaction> transactions) {
                 transactionAdapter = new TransactionAdapter(transactions);
-                binding.transactionsRecycleView.setAdapter(transactionAdapter);
+                binding.transactionRecyclerView.setAdapter(transactionAdapter);
 
                 if (transactions.isEmpty()) {
                     binding.progressBar.setVisibility(View.GONE);

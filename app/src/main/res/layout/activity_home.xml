@@ -110,7 +110,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/transactionsRecycleView"
+        android:id="@+id/transactionRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="20dp"
@@ -123,7 +123,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/balanceContainer"
-        tools:listitem="@layout/transaction_line_view" />
+        tools:listitem="@layout/recycler_view_transaction" />
 
     <ProgressBar
         android:id="@+id/progressBar"
