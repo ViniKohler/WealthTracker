@@ -235,9 +235,16 @@ public class TransactionActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         binding.categoryRecyclerView.setLayoutManager(layoutManager);
 
-        CategoryAdapter adapter = new CategoryAdapter(Arrays.asList(categoryList));
+        CategoryAdapter adapter = new CategoryAdapter(Arrays.asList(categoryList), new CategoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String categoryString) {
+                category = categoryString;
+                Toast.makeText(TransactionActivity.this, "Category: " + category, Toast.LENGTH_SHORT).show();
+            }
+        });
         binding.categoryRecyclerView.setAdapter(adapter);
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

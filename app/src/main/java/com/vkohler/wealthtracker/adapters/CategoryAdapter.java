@@ -18,9 +18,11 @@ import java.util.List;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private List<String> categoryList;
-    private String categoryName;
-    public CategoryAdapter(List<String> categoryList) {
+    private OnItemClickListener listener;
+
+    public CategoryAdapter(List<String> categoryList, OnItemClickListener listener) {
         this.categoryList = categoryList;
+        this.listener = listener;
     }
 
     @Override
@@ -34,6 +36,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         Context context = holder.itemView.getContext();
         String category = categoryList.get(position);
         Icon icon = null;
+        String categoryName = "";
 
         switch (category) {
             case "Bill":
@@ -99,11 +102,24 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
         holder.categoryIcon.setImageIcon(icon);
         holder.categoryName.setText(categoryName);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onItemClick(category);
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return categoryList.size();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(String category);
     }
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
