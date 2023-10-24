@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.adapters.CategoryAdapter;
@@ -194,7 +193,7 @@ public class TransactionActivity extends AppCompatActivity {
 
     private void changeStrokeColor(String color) {
         int colorResource = 0;
-        Drawable backgroundDrawable = getResources().getDrawable(R.drawable.stroked_corner);
+        Drawable backgroundDrawable = getResources().getDrawable(R.drawable.stroke_white_corner);
 
         switch (color) {
             case "white":

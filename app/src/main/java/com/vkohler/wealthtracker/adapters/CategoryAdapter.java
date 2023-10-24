@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -90,10 +89,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.categoryIcon.setImageIcon(icon);
 
         if (position == selectedItemPosition) {
-            holder.itemView.setBackground(context.getDrawable(R.drawable.white_circle));
+            holder.itemView.setBackground(context.getDrawable(R.drawable.white_corner));
             holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.background_dark)));
         } else {
-            holder.itemView.setBackground(context.getDrawable(R.drawable.stroked_corner));
+            holder.itemView.setBackground(context.getDrawable(R.drawable.stroke_white_corner));
             holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.text_primary)));
         }
 

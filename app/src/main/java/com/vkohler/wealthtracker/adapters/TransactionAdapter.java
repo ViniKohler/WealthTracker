@@ -42,10 +42,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         String value = transaction.getValue();
 
         if (new BigDecimal(value).compareTo(BigDecimal.ZERO) < 0) { // if == 0 return 0; if > 0 return 1; if < 0 return 2
-            background = R.drawable.category_red_background;
+            background = R.drawable.stroke_red_corner;
             holder.currency.setText("- $");
         } else {
-            background = R.drawable.category_green_background;
+            background = R.drawable.stroke_green_corner;
         }
 
         switch (transaction.getCategory()) {

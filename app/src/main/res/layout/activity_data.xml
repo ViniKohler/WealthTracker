@@ -72,7 +72,7 @@
             android:id="@+id/addButton"
             android:layout_width="60dp"
             android:layout_height="35dp"
-            android:background="@drawable/background_corner"
+            android:background="@drawable/light_black_corner"
             android:backgroundTint="@color/green"
             android:padding="3dp"
             android:src="@drawable/ic_add"
