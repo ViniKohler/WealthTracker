@@ -31,7 +31,9 @@ public class TransactionActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
     TransactionManager transactionManager;
     ActivityTransactionBinding binding;
-    String title, category, signal, strValue;
+    String title, signal;
+    String category = "";
+    String strValue = "";
     BigDecimal bigValue;
     Date dateTime = new Date();
     final static int LIMIT_VALUE = 9;
@@ -58,17 +60,13 @@ public class TransactionActivity extends AppCompatActivity {
             activityManager.startLastActivity();
         });
         binding.x.setOnClickListener(v -> {
-            strValue = "";
-            signal = null;
-            category = null;
-            updateUI();
-            changeStrokeColor("white");
-            binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
-            binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
-            binding.addTransaction.setVisibility(View.GONE);
+            clearTransactionData();
         });
         binding.backspace.setOnClickListener(v -> {
             strValue = strValue.substring(0, strValue.length() - 1);
+            if (strValue.length() == 0) {
+                clearTransactionData();
+            }
             updateUI();
         });
         binding.buttonPlus.setOnClickListener(v -> {
@@ -95,8 +93,6 @@ public class TransactionActivity extends AppCompatActivity {
                         transactionManager.addTransaction(title, bigValue.negate(), category, dateTime);
                 }
                 binding.x.performClick();
-            } else if (category == null) {
-                Toast.makeText(this, "No category :/", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -181,16 +177,17 @@ public class TransactionActivity extends AppCompatActivity {
             binding.x.setVisibility(View.GONE);
         }
 
-        if (!strValue.isEmpty() && signal != null) {
+        if (!strValue.isEmpty() && signal != null && !category.isEmpty()) {
             binding.addTransaction.setVisibility(View.VISIBLE);
         }
+
+        ((CategoryAdapter) binding.categoryRecyclerView.getAdapter()).notifyDataSetChanged();
     }
 
     private void init() {
         binding.swipeRefresh.setColorSchemeResources(R.color.no_color);
         binding.swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.no_color);
         changeStrokeColor("white");
-        strValue = "";
         updateRecyclerView();
         updateUI();
     }
@@ -239,10 +236,22 @@ public class TransactionActivity extends AppCompatActivity {
             @Override
             public void onItemClick(String categoryString) {
                 category = categoryString;
-                Toast.makeText(TransactionActivity.this, "Category: " + category, Toast.LENGTH_SHORT).show();
+                updateUI();
             }
         });
         binding.categoryRecyclerView.setAdapter(adapter);
+    }
+
+    private void clearTransactionData() {
+        strValue = "";
+        signal = null;
+        category = null;
+        updateUI();
+        changeStrokeColor("white");
+        binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
+        binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
+        binding.addTransaction.setVisibility(View.GONE);
+        ((CategoryAdapter) binding.categoryRecyclerView.getAdapter()).clearSelection();
     }
 
     @Override

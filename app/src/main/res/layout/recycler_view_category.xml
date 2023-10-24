@@ -2,7 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="70dp"
-    android:layout_height="85dp"
+    android:layout_height="70dp"
+
+    android:background="@drawable/stroked_corner"
     android:layout_marginHorizontal="10dp">
 
     <ImageView
@@ -10,20 +12,9 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:padding="15dp"
-        android:background="@drawable/stroked_corner"
         android:src="@drawable/ic_dollar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/text_primary" />
-
-    <TextView
-        android:id="@+id/categoryName"
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:gravity="center_horizontal"
-        android:textSize="10sp"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/categoryIcon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

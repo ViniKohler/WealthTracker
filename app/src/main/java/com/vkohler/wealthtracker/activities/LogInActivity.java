@@ -58,7 +58,6 @@ public class LogInActivity extends AppCompatActivity {
                     binding.progressBar.setVisibility(View.GONE);
                 }
             });
-
         });
     }
 }

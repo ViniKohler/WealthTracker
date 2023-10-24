@@ -1,6 +1,7 @@
 package com.vkohler.wealthtracker.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Icon;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
+    private int selectedItemPosition = -1;
     private List<String> categoryList;
     private OnItemClickListener listener;
 
@@ -36,78 +38,73 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         Context context = holder.itemView.getContext();
         String category = categoryList.get(position);
         Icon icon = null;
-        String categoryName = "";
 
         switch (category) {
             case "Bill":
                 icon = Icon.createWithResource(context, R.drawable.ic_bill);
-                categoryName = "Bill";
                 break;
             case "Clothing":
                 icon = Icon.createWithResource(context, R.drawable.ic_clothing);
-                categoryName = "Clothing";
                 break;
             case "Debts":
                 icon = Icon.createWithResource(context, R.drawable.ic_debt);
-                categoryName = "Debts";
                 break;
             case "Education":
                 icon = Icon.createWithResource(context, R.drawable.ic_education);
-                categoryName = "Education";
                 break;
             case "Entertainment":
                 icon = Icon.createWithResource(context, R.drawable.ic_entertainment);
-                categoryName = "Entertainment";
                 break;
             case "Food":
                 icon = Icon.createWithResource(context, R.drawable.ic_food);
-                categoryName = "Food";
                 break;
             case "Health":
                 icon = Icon.createWithResource(context, R.drawable.ic_health);
-                categoryName = "Health";
                 break;
             case "Insurance":
                 icon = Icon.createWithResource(context, R.drawable.ic_insurance);
-                categoryName = "Insurance";
                 break;
             case "Investment":
                 icon = Icon.createWithResource(context, R.drawable.ic_investment);
-                categoryName = "Investment";
                 break;
             case "Maintenance":
                 icon = Icon.createWithResource(context, R.drawable.ic_maintenance);
-                categoryName = "Maintenance";
                 break;
             case "Salary":
                 icon = Icon.createWithResource(context, R.drawable.ic_dollar);
-                categoryName = "Salary";
                 break;
             case "Savings":
                 icon = Icon.createWithResource(context, R.drawable.ic_savings);
-                categoryName = "Savings";
                 break;
             case "Taxes":
                 icon = Icon.createWithResource(context, R.drawable.ic_tax);
-                categoryName = "Taxes";
                 break;
             case "Transport":
                 icon = Icon.createWithResource(context, R.drawable.ic_transport);
-                categoryName = "Transport";
                 break;
             case "Traveling":
                 icon = Icon.createWithResource(context, R.drawable.ic_traveling);
-                categoryName = "Traveling";
                 break;
         }
+
         holder.categoryIcon.setImageIcon(icon);
-        holder.categoryName.setText(categoryName);
+
+        if (position == selectedItemPosition) {
+            holder.itemView.setBackground(context.getDrawable(R.drawable.white_circle));
+            holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.background_dark)));
+        } else {
+            holder.itemView.setBackground(context.getDrawable(R.drawable.stroked_corner));
+            holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.text_primary)));
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
                     listener.onItemClick(category);
+
+                    selectedItemPosition = position;
+                    notifyDataSetChanged();
                 }
             }
         });
@@ -122,14 +119,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         void onItemClick(String category);
     }
 
+    public void clearSelection() {
+        selectedItemPosition = -1;
+        notifyDataSetChanged();
+    }
+
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
         public ImageView categoryIcon;
-        public TextView categoryName;
 
         public CategoryViewHolder(View itemView) {
             super(itemView);
             categoryIcon = itemView.findViewById(R.id.categoryIcon);
-            categoryName = itemView.findViewById(R.id.categoryName);
         }
     }
 
