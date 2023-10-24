@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.vkohler.wealthtracker.R;
@@ -155,10 +156,24 @@ public class TransactionActivity extends AppCompatActivity {
             }
             updateUI();
         });
-        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+        binding.getRoot().setOnTouchListener(new View.OnTouchListener() {
+            private float startY;
+
             @Override
-            public void onRefresh() {
-                activityManager.startLastActivity();
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        float endY = event.getY();
+                        if (endY - 300 > startY) {
+                            activityManager.startLastActivity();
+                        }
+                        break;
+                }
+                return true;
             }
         });
     }
@@ -184,8 +199,6 @@ public class TransactionActivity extends AppCompatActivity {
     }
 
     private void init() {
-        binding.swipeRefresh.setColorSchemeResources(R.color.no_color);
-        binding.swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.no_color);
         changeStrokeColor("white");
         updateRecyclerView();
         updateUI();
