@@ -39,24 +39,17 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.wealthTracker.setOnClickListener(v -> {
-            activityManager.startURLActivity("http://github.com/ViniKohler");
-        });
+        binding.wealthTracker.setOnClickListener(v -> activityManager.startURLActivity("http://github.com/ViniKohler"));
 
-        binding.createAccount.setOnClickListener(v -> {
-            activityManager.startActivity("logon");
-        });
+        binding.createAccount.setOnClickListener(v -> activityManager.startActivity("logon"));
 
         binding.logIn.setOnClickListener(v -> {
             binding.logIn.setVisibility(View.GONE);
             binding.progressBar.setVisibility(View.VISIBLE);
 
-            logManager.logIn(binding.username.getText().toString(), binding.password.getText().toString(), new LogCallback() {
-                @Override
-                public void actionDone() {
-                    binding.logIn.setVisibility(View.VISIBLE);
-                    binding.progressBar.setVisibility(View.GONE);
-                }
+            logManager.logIn(binding.username.getText().toString(), binding.password.getText().toString(), () -> {
+                binding.logIn.setVisibility(View.VISIBLE);
+                binding.progressBar.setVisibility(View.GONE);
             });
         });
     }

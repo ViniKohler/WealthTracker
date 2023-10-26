@@ -3,7 +3,6 @@ package com.vkohler.wealthtracker.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.vkohler.wealthtracker.databinding.ActivityDataBinding;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
@@ -35,21 +34,11 @@ public class DataActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.name.setOnClickListener(v -> {
-            activityManager.startActivity("profile");
-        });
-        binding.logOut.setOnClickListener(v -> {
-            logManager.logOut();
-        });
-        binding.home.setOnClickListener(v -> {
-            activityManager.startActivity("home");
-        });
-        binding.addButton.setOnClickListener(v -> {
-            activityManager.startActivity("transaction");
-        });
-        binding.data.setOnClickListener(v -> {
-            activityManager.startActivity("data");
-        });
+        binding.name.setOnClickListener(v -> activityManager.startActivity("profile"));
+        binding.logOut.setOnClickListener(v -> logManager.logOut());
+        binding.home.setOnClickListener(v -> activityManager.startActivity("home"));
+        binding.addButton.setOnClickListener(v -> activityManager.startActivity("transaction"));
+        binding.data.setOnClickListener(v -> activityManager.startActivity("data"));
     }
 
     private void updateUI() {

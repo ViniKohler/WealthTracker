@@ -1,9 +1,10 @@
 package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -31,6 +32,7 @@ public class TransactionActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
     TransactionManager transactionManager;
     ActivityTransactionBinding binding;
+    Context context;
     String title, signal;
     String category = "";
     String strValue = "";
@@ -41,10 +43,11 @@ public class TransactionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityManager = new ActivityManager(getApplicationContext());
-        logManager = new LogManager(getApplicationContext());
-        preferenceManager = new PreferenceManager(getApplicationContext());
-        transactionManager = new TransactionManager(getApplicationContext());
+        context = getApplicationContext();
+        activityManager = new ActivityManager(context);
+        logManager = new LogManager(context);
+        preferenceManager = new PreferenceManager(context);
+        transactionManager = new TransactionManager(context);
 
         binding = ActivityTransactionBinding.inflate(getLayoutInflater());
         overridePendingTransition(0, 0);
@@ -56,12 +59,8 @@ public class TransactionActivity extends AppCompatActivity {
 
 
     private void setListeners() {
-        binding.back.setOnClickListener(v -> {
-            activityManager.startLastActivity();
-        });
-        binding.x.setOnClickListener(v -> {
-            clearTransactionData();
-        });
+        binding.back.setOnClickListener(v -> activityManager.startLastActivity());
+        binding.x.setOnClickListener(v -> clearTransactionData());
         binding.backspace.setOnClickListener(v -> {
             strValue = strValue.substring(0, strValue.length() - 1);
             if (strValue.length() == 0) {
@@ -71,16 +70,16 @@ public class TransactionActivity extends AppCompatActivity {
         });
         binding.buttonPlus.setOnClickListener(v -> {
             changeStrokeColor("green");
-            binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
-            binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
-            binding.addTransaction.setBackgroundColor(getResources().getColor(R.color.green));
+            binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
+            binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.background_dark)));
+            binding.addTransaction.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
             updateUI();
         });
         binding.buttonMinus.setOnClickListener(v -> {
             changeStrokeColor("red");
-            binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red)));
-            binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
-            binding.addTransaction.setBackgroundColor(getResources().getColor(R.color.red));
+            binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red)));
+            binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.background_dark)));
+            binding.addTransaction.setBackgroundColor(ContextCompat.getColor(context, R.color.red));
             updateUI();
         });
         binding.addTransaction.setOnClickListener(v -> {
@@ -181,12 +180,15 @@ public class TransactionActivity extends AppCompatActivity {
     private void updateUI() {
 
         if (!strValue.isEmpty()) {
-            bigValue = new BigDecimal(strValue).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
+//            bigValue = new BigDecimal(strValue).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal value = new BigDecimal(strValue);
+            BigDecimal dividedValue = value.divide(BigDecimal.valueOf(100));
+            bigValue = dividedValue.setScale(2, RoundingMode.HALF_UP);
             binding.value.setText(String.valueOf(bigValue));
             binding.x.setVisibility(View.VISIBLE);
             binding.backspace.setVisibility(View.VISIBLE);
         } else {
-            binding.value.setText("0.00");
+            binding.value.setText(R.string.decimalZero);
             binding.backspace.setVisibility(View.GONE);
             binding.x.setVisibility(View.GONE);
         }
@@ -195,7 +197,8 @@ public class TransactionActivity extends AppCompatActivity {
             binding.addTransaction.setVisibility(View.VISIBLE);
         }
 
-        ((CategoryAdapter) binding.categoryRecyclerView.getAdapter()).notifyDataSetChanged();
+        if (binding.categoryRecyclerView.getAdapter() != null)
+            (binding.categoryRecyclerView.getAdapter()).notifyDataSetChanged();
     }
 
     private void init() {
@@ -206,19 +209,19 @@ public class TransactionActivity extends AppCompatActivity {
 
     private void changeStrokeColor(String color) {
         int colorResource = 0;
-        Drawable backgroundDrawable = getResources().getDrawable(R.drawable.stroke_white_corner);
+        Drawable backgroundDrawable = getResources().getDrawable(R.drawable.stroke_white_corner); //Don't change this
 
         switch (color) {
             case "white":
-                colorResource = getResources().getColor(R.color.text_primary);
+                colorResource = ContextCompat.getColor(context, R.color.text_primary);
                 break;
             case "red":
                 signal = "-";
-                colorResource = getResources().getColor(R.color.red);
+                colorResource = ContextCompat.getColor(context, R.color.red);
                 break;
             case "green":
                 signal = "+";
-                colorResource = getResources().getColor(R.color.green);
+                colorResource = ContextCompat.getColor(context, R.color.green);
                 break;
         }
 
@@ -260,10 +263,12 @@ public class TransactionActivity extends AppCompatActivity {
         category = null;
         updateUI();
         changeStrokeColor("white");
-        binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
-        binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.background_dark)));
+        binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.background_dark)));
+        binding.buttonPlus.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.background_dark)));
         binding.addTransaction.setVisibility(View.GONE);
-        ((CategoryAdapter) binding.categoryRecyclerView.getAdapter()).clearSelection();
+        if (binding.categoryRecyclerView.getAdapter() != null) {
+            ((CategoryAdapter) binding.categoryRecyclerView.getAdapter()).clearSelection();
+        }
     }
 
     @Override

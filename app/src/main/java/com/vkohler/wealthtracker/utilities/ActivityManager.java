@@ -23,7 +23,7 @@ public class ActivityManager {
     }
 
     public void startActivity(String activityName) {
-        Class newActivity = null;
+        Class<?> newActivity = null;
         switch (activityName) {
             case "login":
                 newActivity = LogInActivity.class;

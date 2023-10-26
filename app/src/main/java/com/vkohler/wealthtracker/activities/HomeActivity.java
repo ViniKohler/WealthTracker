@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
@@ -32,10 +33,12 @@ public class HomeActivity extends AppCompatActivity {
     TransactionManager transactionManager;
     ActivityHomeBinding binding;
     private TransactionAdapter transactionAdapter;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getApplicationContext();
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         activityManager = new ActivityManager(getApplicationContext());
         logManager = new LogManager(getApplicationContext());
@@ -52,24 +55,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.name.setOnClickListener(v -> {
-            activityManager.startActivity("profile");
-        });
-        binding.logOut.setOnClickListener(v -> {
-            logManager.logOut();
-        });
-        binding.eye.setOnClickListener(v -> {
-            changeVisibility();
-        });
-        binding.home.setOnClickListener(v -> {
-            activityManager.startActivity("home");
-        });
-        binding.addButton.setOnClickListener(v -> {
-            activityManager.startActivity("transaction");
-        });
-        binding.data.setOnClickListener(v -> {
-            activityManager.startActivity("data");
-        });
+        binding.name.setOnClickListener(v -> activityManager.startActivity("profile"));
+        binding.logOut.setOnClickListener(v -> logManager.logOut());
+        binding.eye.setOnClickListener(v -> changeVisibility());
+        binding.home.setOnClickListener(v -> activityManager.startActivity("home"));
+        binding.addButton.setOnClickListener(v -> activityManager.startActivity("transaction"));
+        binding.data.setOnClickListener(v -> activityManager.startActivity("data"));
 
     }
 
@@ -86,28 +77,28 @@ public class HomeActivity extends AppCompatActivity {
     private void changeVisibility() {
         Boolean visibility = preferenceManager.getBoolean(Constants.KEY_IS_BALANCE_VISIBLE);
         if (visibility) {
-            binding.visibility.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.text_secondary)));
-            binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary));
-            binding.balance.setTextColor(getResources().getColor(R.color.text_secondary));
-            binding.currency.setTextColor(getResources().getColor(R.color.text_secondary));
+            binding.visibility.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
+            binding.eye.setColorFilter(ContextCompat.getColor(context, R.color.text_secondary));
+            binding.balance.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
+            binding.currency.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
             binding.balance.setText("••••");
             binding.currency.setText("$ ");
             preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, false);
         } else {
             String balance = preferenceManager.getString(Constants.KEY_BALANCE);
             if (!balance.contains("-")) {
-                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
+                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
                 binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.green));
                 binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
                 binding.currency.setText("$ ");
             } else {
-                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red)));
+                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red)));
                 binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.red));
                 binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE).replace("-", ""));
                 binding.currency.setText("-$ ");
             }
-            binding.balance.setTextColor(getResources().getColor(R.color.text_primary));
-            binding.currency.setTextColor(getResources().getColor(R.color.text_primary));
+            binding.balance.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
+            binding.currency.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
             preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, true);
         }
     }

@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
-    private List<Transaction> transactionList;
+    private final List<Transaction> transactionList;
 
     public TransactionAdapter(List<Transaction> transactionList) {
         this.transactionList = transactionList;
@@ -107,7 +107,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return transactionList.size();
     }
 
-    public class TransactionViewHolder extends RecyclerView.ViewHolder {
+    public static class TransactionViewHolder extends RecyclerView.ViewHolder {
         public TextView category, currency, value;
         public ImageView categoryIcon;
 

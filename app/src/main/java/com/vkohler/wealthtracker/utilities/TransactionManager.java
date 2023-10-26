@@ -1,27 +1,16 @@
 package com.vkohler.wealthtracker.utilities;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.vkohler.wealthtracker.interfaces.TransactionCallback;
 import com.vkohler.wealthtracker.models.Transaction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +20,7 @@ public class TransactionManager {
 
     PreferenceManager preferenceManager;
     private final Context context;
-    private List<Transaction> transactions = new ArrayList<>();
+    private final List<Transaction> transactions = new ArrayList<>();
 
     public TransactionManager(Context context) {
         this.context = context;
@@ -62,7 +51,7 @@ public class TransactionManager {
                     Toast.makeText(context, "Transaction created successfully!", Toast.LENGTH_SHORT).show();
 
                     Map<String, Object> updateMap = new HashMap<>();
-                    updateMap.put(Constants.KEY_BALANCE, strFinalBalance.toString());
+                    updateMap.put(Constants.KEY_BALANCE, strFinalBalance);
                     walletReference.update(updateMap)
                             .addOnSuccessListener(aVoid -> {
                                 preferenceManager.putString(Constants.KEY_BALANCE, strFinalBalance);
@@ -80,7 +69,7 @@ public class TransactionManager {
                 });
     }
 
-    public List<Transaction> getTransactions(TransactionCallback callback) {
+    public void getTransactions(TransactionCallback callback) {
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String walletId = preferenceManager.getString(Constants.KEY_WALLET_ID);
@@ -89,34 +78,15 @@ public class TransactionManager {
 
         database.collection(Constants.KEY_COLLECTION_TRANSACTIONS).whereEqualTo("walletId", walletId)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            Transaction transaction = documentSnapshot.toObject(Transaction.class);
-                            transactions.add(transaction);
-                        }
-                        transactions.sort(new Comparator<Transaction>() {
-                            @Override
-                            public int compare(Transaction t1, Transaction t2) {
-                                return t2.getDateTime().compareTo(t1.getDateTime());
-                            }
-                        });
-
-                        callback.onTransactionsLoaded(transactions);
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        Transaction transaction = documentSnapshot.toObject(Transaction.class);
+                        transactions.add(transaction);
                     }
+                    transactions.sort((t1, t2) -> t2.getDateTime().compareTo(t1.getDateTime()));
+
+                    callback.onTransactionsLoaded(transactions);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        callback.onError("Error while getting transactions");
-                    }
-                });
-
-        //Verifique se a lista está vazia ou não aqui
-
-        //Organize a lista aqui
-
-        return transactions;
+                .addOnFailureListener(e -> callback.onError("Error while getting transactions"));
     }
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.vkohler.wealthtracker.R;
@@ -18,14 +19,15 @@ import java.util.List;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private int selectedItemPosition = -1;
-    private List<String> categoryList;
-    private OnItemClickListener listener;
+    private final List<String> categoryList;
+    private final OnItemClickListener listener;
 
     public CategoryAdapter(List<String> categoryList, OnItemClickListener listener) {
         this.categoryList = categoryList;
         this.listener = listener;
     }
 
+    @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_category, parent, false);
@@ -89,22 +91,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.categoryIcon.setImageIcon(icon);
 
         if (position == selectedItemPosition) {
-            holder.itemView.setBackground(context.getDrawable(R.drawable.white_corner));
+            holder.itemView.setBackground(ContextCompat.getDrawable(context, R.drawable.white_corner));
             holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.background_dark)));
         } else {
-            holder.itemView.setBackground(context.getDrawable(R.drawable.stroke_white_corner));
+            holder.itemView.setBackground(ContextCompat.getDrawable(context, R.drawable.stroke_white_corner));
             holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.text_primary)));
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onItemClick(category);
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(category);
 
-                    selectedItemPosition = position;
-                    notifyDataSetChanged();
-                }
+                selectedItemPosition = position;
+                notifyDataSetChanged();
             }
         });
     }
@@ -123,7 +122,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         notifyDataSetChanged();
     }
 
-    public class CategoryViewHolder extends RecyclerView.ViewHolder {
+    public static class CategoryViewHolder extends RecyclerView.ViewHolder {
         public ImageView categoryIcon;
 
         public CategoryViewHolder(View itemView) {

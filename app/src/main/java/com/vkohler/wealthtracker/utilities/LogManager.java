@@ -60,9 +60,7 @@ public class LogManager {
                                         preferenceManager.putString(Constants.KEY_BALANCE, walletSnapshot.getString(Constants.KEY_BALANCE));
                                         callback.actionDone();
                                     })
-                                    .addOnCompleteListener(completeTask -> {
-                                        activityManager.startActivity("home");
-                                    });
+                                    .addOnCompleteListener(completeTask -> activityManager.startActivity("home"));
                         } else {
                             showToast("Unable to login");
                             callback.actionDone();
@@ -192,12 +190,8 @@ public class LogManager {
                     preferenceManager.putString(fieldKey, newValue);
                     showToast(successMessage + " updated successfully");
                 })
-                .addOnCompleteListener(v -> {
-                    activityManager.startActivity("profile");
-                })
-                .addOnFailureListener(e -> {
-                    showToast(e.getMessage());
-                });
+                .addOnCompleteListener(v -> activityManager.startActivity("profile"))
+                .addOnFailureListener(e -> showToast(e.getMessage()));
     }
 
     public void deleteLog() {
@@ -228,21 +222,13 @@ public class LogManager {
                                                         logOut();
                                                         showToast("User deleted successfully");
                                                     })
-                                                    .addOnFailureListener(e -> {
-                                                        showToast(e.getMessage());
-                                                    });
+                                                    .addOnFailureListener(e -> showToast(e.getMessage()));
                                         })
-                                        .addOnFailureListener(e -> {
-                                            showToast(e.getMessage());
-                                        });
+                                        .addOnFailureListener(e -> showToast(e.getMessage()));
                             })
-                            .addOnFailureListener(e -> {
-                                showToast(e.getMessage());
-                            });
+                            .addOnFailureListener(e -> showToast(e.getMessage()));
                 })
-                .addOnFailureListener(e -> {
-                    showToast(e.getMessage());
-                });
+                .addOnFailureListener(e -> showToast(e.getMessage()));
     }
 
     private void showToast(String m) {

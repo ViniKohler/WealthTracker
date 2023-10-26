@@ -1,7 +1,9 @@
 package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,24 +16,24 @@ import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.LogManager;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
-import java.util.Objects;
-
 public class ProfileUpdateActivity extends AppCompatActivity {
 
     ActivityManager activityManager;
     LogManager logManager;
     PreferenceManager preferenceManager;
     ActivityProfileUpdateBinding binding;
+    Context context;
 
     String username, name, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getApplicationContext();
         binding = com.vkohler.wealthtracker.databinding.ActivityProfileUpdateBinding.inflate(getLayoutInflater());
-        activityManager = new ActivityManager(getApplicationContext());
-        logManager = new LogManager(getApplicationContext());
-        preferenceManager = new PreferenceManager(getApplicationContext());
+        activityManager = new ActivityManager(context);
+        logManager = new LogManager(context);
+        preferenceManager = new PreferenceManager(context);
 
         overridePendingTransition(0, 0);
         setContentView(binding.getRoot());
@@ -41,20 +43,18 @@ public class ProfileUpdateActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.update.setOnClickListener(v -> {
-            updateUser();
-        });
-        binding.cancel.setOnClickListener(v -> {
-            activityManager.startActivity("profile");
-        });
+        binding.update.setOnClickListener(v -> updateUser());
+        binding.cancel.setOnClickListener(v -> activityManager.startActivity("profile"));
         binding.username.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 updateInputUI();
             }
+
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -63,10 +63,12 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 updateInputUI();
             }
+
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -75,10 +77,12 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 updateInputUI();
             }
+
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -87,10 +91,12 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 updateInputUI();
             }
+
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -113,28 +119,27 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         String confirmNewPassword = binding.confirmPassword.getText().toString();
 
         if (!username.equals(newUsername)) {
-            binding.username.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
+            binding.username.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
         } else {
-            binding.username.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.text_secondary)));
+            binding.username.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
         }
         if (!name.equals(newName)) {
-            binding.name.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
-        }
-        else {
-            binding.name.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.text_secondary)));
+            binding.name.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
+        } else {
+            binding.name.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
         }
 
         if (!password.equals(newPassword) || !password.equals(confirmNewPassword)) {
-            binding.password.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
-            binding.confirmPassword.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green)));
+            binding.password.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
+            binding.confirmPassword.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
         } else {
-            binding.password.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.text_secondary)));
-            binding.confirmPassword.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.text_secondary)));
+            binding.password.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
+            binding.confirmPassword.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
         }
 
-        if (!newPassword.equals(confirmNewPassword) || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
-            binding.password.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red)));
-            binding.confirmPassword.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red)));
+        if (!newPassword.equals(confirmNewPassword) || newPassword.isEmpty()) {
+            binding.password.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red)));
+            binding.confirmPassword.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red)));
         }
     }
 
