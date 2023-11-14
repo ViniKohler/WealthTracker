@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginTop="20dp"
+    android:background="@drawable/corner"
+    android:padding="20dp"
+    tools:context=".BalanceBarFragment">
+
+    <TextView
+        android:id="@+id/month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="October"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/negative"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/light_black_corner"
+        android:backgroundTint="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.99"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/month" />
+
+    <View
+        android:id="@+id/positive"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:background="@drawable/light_black_corner"
+        android:backgroundTint="@color/text_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/negative" />
+
+    <TextView
+        android:id="@+id/positiveValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$ 0.00"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/positive"
+        app:layout_constraintTop_toBottomOf="@id/positive" />
+
+    <TextView
+        android:id="@+id/negativeValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$ 0.00"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@id/negative"
+        app:layout_constraintTop_toBottomOf="@id/positive" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

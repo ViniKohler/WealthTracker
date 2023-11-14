@@ -2,11 +2,15 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
+import com.vkohler.wealthtracker.BalanceBarFragment;
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityHomeBinding;
 import com.vkohler.wealthtracker.interfaces.TransactionManagerCallback;
@@ -51,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
 
         setListeners();
         updateUI();
-        updateProgressBar();
+//        updateProgressBar();
     }
 
     private void setListeners() {
@@ -72,6 +76,12 @@ public class HomeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Fragment fragment = new BalanceBarFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentBalanceBar = fragmentManager.beginTransaction();
+        fragmentBalanceBar.replace(binding.balanceBarFragment.getId(), fragment);
+        fragmentBalanceBar.commit();
     }
 
     private void changeVisibility() {
@@ -103,73 +113,73 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void updateProgressBar() {
-        List<Transaction> list = new ArrayList<>();
-        transactionManager.getTransactions(new TransactionManagerCallback() {
-            @Override
-            public void onTransactionsLoaded(List<Transaction> transactions) {
-                list.clear();
-                list.addAll(transactions);
-
-                if (list.size() != 0) {
-
-                    BigDecimal positive = BigDecimal.ZERO;
-                    BigDecimal negative = BigDecimal.ZERO;
-                    BigDecimal total = BigDecimal.ZERO;
-
-                    for (int i = 0; i <= list.size() - 1; i++) {
-
-                        BigDecimal value = new BigDecimal(list.get(i).getValue());
-
-                        if (value.compareTo(BigDecimal.ZERO) > 0) {
-                            positive = positive.add(value);
-
-                            total = total.add(value);
-
-                        } else {
-                            negative = negative.add(value);
-
-                            total = total.add(value.negate());
-                        }
-                    }
-
-                    BigDecimal percentPositive = positive.multiply(BigDecimal.valueOf(100)).divide(total, RoundingMode.UP);
-                    BigDecimal percentNegative = negative.multiply(BigDecimal.valueOf(100)).divide(total, RoundingMode.UP);
-
-                    int width = binding.positive.getWidth();
-
-                    int finalPositiveWidth = percentPositive.intValue() * width / 100;
-                    int finalNegativeWidth = percentNegative.intValue() * width / 100;
-
-                    NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
-                    format.setGroupingUsed(true);
-                    format.setMinimumFractionDigits(2);
-
-                    String positiveValue = "$ " + format.format(positive);
-                    String negativeValue = "-$ " + format.format(negative.abs());
-
-                    int green = ContextCompat.getColor(context, R.color.green);
-                    int red = ContextCompat.getColor(context, R.color.red);
-
-                    binding.positive.getLayoutParams().width = finalPositiveWidth;
-
-                    binding.positiveValue.setTextColor(green);
-                    binding.positive.setBackgroundTintList(ColorStateList.valueOf(green));
-                    binding.negativeValue.setTextColor(red);
-
-                    binding.positiveValue.setText(positiveValue);
-                    binding.negativeValue.setText(negativeValue);
-
-                    binding.positive.requestLayout();
-                    binding.negative.requestLayout();
-                }
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-            }
-        });
-    }
+//    private void updateProgressBar() {
+//        List<Transaction> list = new ArrayList<>();
+//        transactionManager.getTransactions(new TransactionManagerCallback() {
+//            @Override
+//            public void onTransactionsLoaded(List<Transaction> transactions) {
+//                list.clear();
+//                list.addAll(transactions);
+//
+//                if (list.size() != 0) {
+//
+//                    BigDecimal positive = BigDecimal.ZERO;
+//                    BigDecimal negative = BigDecimal.ZERO;
+//                    BigDecimal total = BigDecimal.ZERO;
+//
+//                    for (int i = 0; i <= list.size() - 1; i++) {
+//
+//                        BigDecimal value = new BigDecimal(list.get(i).getValue());
+//
+//                        if (value.compareTo(BigDecimal.ZERO) > 0) {
+//                            positive = positive.add(value);
+//
+//                            total = total.add(value);
+//
+//                        } else {
+//                            negative = negative.add(value);
+//
+//                            total = total.add(value.negate());
+//                        }
+//                    }
+//
+//                    BigDecimal percentPositive = positive.multiply(BigDecimal.valueOf(100)).divide(total, RoundingMode.UP);
+//                    BigDecimal percentNegative = negative.multiply(BigDecimal.valueOf(100)).divide(total, RoundingMode.UP);
+//
+//                    int width = binding.positive.getWidth();
+//
+//                    int finalPositiveWidth = percentPositive.intValue() * width / 100;
+//                    int finalNegativeWidth = percentNegative.intValue() * width / 100;
+//
+//                    NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
+//                    format.setGroupingUsed(true);
+//                    format.setMinimumFractionDigits(2);
+//
+//                    String positiveValue = "$ " + format.format(positive);
+//                    String negativeValue = "-$ " + format.format(negative.abs());
+//
+//                    int green = ContextCompat.getColor(context, R.color.green);
+//                    int red = ContextCompat.getColor(context, R.color.red);
+//
+//                    binding.positive.getLayoutParams().width = finalPositiveWidth;
+//
+//                    binding.positiveValue.setTextColor(green);
+//                    binding.positive.setBackgroundTintList(ColorStateList.valueOf(green));
+//                    binding.negativeValue.setTextColor(red);
+//
+//                    binding.positiveValue.setText(positiveValue);
+//                    binding.negativeValue.setText(negativeValue);
+//
+//                    binding.positive.requestLayout();
+//                    binding.negative.requestLayout();
+//                }
+//            }
+//
+//            @Override
+//            public void onError(String errorMessage) {
+//            }
+//        });
+//    }
 
     @Override
     protected void onResume() {
