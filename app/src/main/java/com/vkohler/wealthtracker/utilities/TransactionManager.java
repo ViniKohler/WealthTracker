@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.vkohler.wealthtracker.interfaces.TransactionCallback;
+import com.vkohler.wealthtracker.interfaces.TransactionManagerCallback;
 import com.vkohler.wealthtracker.models.Transaction;
 
 import java.math.BigDecimal;
@@ -27,7 +28,7 @@ public class TransactionManager {
         preferenceManager = new PreferenceManager(context);
     }
 
-    public void addTransaction(String title, BigDecimal bigValue, String category, Date dateTime) {
+    public void addTransaction(String title, BigDecimal bigValue, String category, Date dateTime, TransactionCallback callback) {
         String strBalance = preferenceManager.getString(Constants.KEY_BALANCE);
         BigDecimal bigBalance = new BigDecimal(strBalance);
         bigBalance = bigBalance.add(bigValue);
@@ -56,10 +57,12 @@ public class TransactionManager {
                             .addOnSuccessListener(aVoid -> {
                                 preferenceManager.putString(Constants.KEY_BALANCE, strFinalBalance);
                                 Toast.makeText(context, "Balance updated successfully!", Toast.LENGTH_SHORT).show();
+                                callback.transactionSuccess();
                             })
                             .addOnFailureListener(e -> {
                                 e.printStackTrace();
                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                callback.transactionFailed();
                             });
 
                 })
@@ -69,7 +72,7 @@ public class TransactionManager {
                 });
     }
 
-    public void getTransactions(TransactionCallback callback) {
+    public void getTransactions(TransactionManagerCallback callback) {
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String walletId = preferenceManager.getString(Constants.KEY_WALLET_ID);

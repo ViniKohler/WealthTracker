@@ -29,7 +29,7 @@ public class LogManager {
 
     public void logIn(String username, String password, LogCallback callback) {
         if (authLogIn(username, password)) {
-            showToast("Logging in...");
+            callback.setMessage("Loading user");
             FirebaseFirestore database = FirebaseFirestore.getInstance();
 
             database.collection(Constants.KEY_COLLECTION_USERS)
@@ -37,9 +37,9 @@ public class LogManager {
                     .whereEqualTo(Constants.KEY_PASSWORD, password)
                     .get()
                     .addOnCompleteListener(userTask -> {
-
                         if (userTask.isSuccessful() && userTask.getResult() != null
                                 && userTask.getResult().getDocuments().size() > 0) {
+                            callback.setMessage("Loading wallet");
                             DocumentSnapshot documentSnapshot = userTask.getResult().getDocuments().get(0);
 
                             preferenceManager.putBoolean(Constants.KEY_IS_LOGGED_IN, true);
@@ -61,10 +61,10 @@ public class LogManager {
                                         callback.actionDone();
                                     })
                                     .addOnCompleteListener(completeTask -> activityManager.startActivity("home"));
-                        } else {
-                            showToast("Unable to login");
-                            callback.actionDone();
                         }
+                    }).addOnFailureListener(e -> {
+                        callback.setMessage("Unable to log in");
+                        showToast(e.getMessage());
                     });
         }
     }
@@ -83,7 +83,7 @@ public class LogManager {
 
     public void logOn(String username, String name, String password, String confirmPassword, LogCallback callback) {
         if (authLogOn(username, name, password, confirmPassword)) {
-            showToast("Logging on...");
+            callback.setMessage("Logging in");
             FirebaseFirestore database = FirebaseFirestore.getInstance();
             HashMap<String, Object> user = new HashMap<>();
             user.put(Constants.KEY_USERNAME, username);
@@ -116,13 +116,13 @@ public class LogManager {
                                     activityManager.startActivity("home");
                                 }).addOnFailureListener(e -> {
                                     callback.actionDone();
-                                    showToast("Unable to logon");
+                                    callback.setMessage("Unable to log on");
                                     showToast(e.getMessage());
                                     logOut();
                                 });
                     })
                     .addOnFailureListener(e -> {
-                        showToast("Unable to logon");
+                        callback.setMessage("Unable to log on");
                         showToast(e.getMessage());
                     });
         }
@@ -154,7 +154,7 @@ public class LogManager {
         activityManager.startActivity("login");
     }
 
-    public void updateLog(String newUsername, String newName, String newPassword, String confirmNewPassword) {
+    public void updateLog(String newUsername, String newName, String newPassword, String confirmNewPassword, LogCallback callback) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference userReference = database.collection(Constants.KEY_COLLECTION_USERS)
                 .document(preferenceManager.getString(Constants.KEY_USER_ID));
@@ -169,29 +169,36 @@ public class LogManager {
             showToast("Nothing to update");
         } else {
             if (!currentUsername.equals(newUsername)) {
-                updateFieldAndShowToast(userReference, Constants.KEY_USERNAME, newUsername, "Username");
+                updateFieldAndShowToast(userReference, Constants.KEY_USERNAME, newUsername, "Username", callback);
             }
 
             if (!currentName.equals(newName)) {
-                updateFieldAndShowToast(userReference, Constants.KEY_NAME, newName, "Name");
+                updateFieldAndShowToast(userReference, Constants.KEY_NAME, newName, "Name", callback);
             }
 
             if (!currentPassword.equals(newPassword) && newPassword.equals(confirmNewPassword)) {
-                updateFieldAndShowToast(userReference, Constants.KEY_PASSWORD, newPassword, "Password");
+                updateFieldAndShowToast(userReference, Constants.KEY_PASSWORD, newPassword, "Password", callback);
             } else if (!currentPassword.equals(newPassword)) {
                 showToast("Passwords are not the same");
             }
         }
     }
 
-    private void updateFieldAndShowToast(DocumentReference userReference, String fieldKey, String newValue, String successMessage) {
+    private void updateFieldAndShowToast(DocumentReference userReference, String fieldKey, String newValue, String successMessage, LogCallback callback) {
         userReference.update(fieldKey, newValue)
                 .addOnSuccessListener(v -> {
                     preferenceManager.putString(fieldKey, newValue);
                     showToast(successMessage + " updated successfully");
+                    callback.actionDone();
                 })
-                .addOnCompleteListener(v -> activityManager.startActivity("profile"))
-                .addOnFailureListener(e -> showToast(e.getMessage()));
+                .addOnCompleteListener(v -> {
+                    activityManager.startActivity("profile");
+                    callback.actionDone();
+                })
+                .addOnFailureListener(e -> {
+                    showToast(e.getMessage());
+                    callback.actionDone();
+                });
     }
 
     public void deleteLog() {

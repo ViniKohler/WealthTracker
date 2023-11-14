@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.vkohler.wealthtracker.adapters.TransactionAdapter;
 import com.vkohler.wealthtracker.databinding.ActivityDataBinding;
-import com.vkohler.wealthtracker.interfaces.TransactionCallback;
+import com.vkohler.wealthtracker.interfaces.TransactionManagerCallback;
 import com.vkohler.wealthtracker.models.Transaction;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
@@ -49,7 +49,7 @@ public class DataActivity extends AppCompatActivity {
     private void updateRecyclerView() {
         binding.transactionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        transactionManager.getTransactions(new TransactionCallback() {
+        transactionManager.getTransactions(new TransactionManagerCallback() {
             @Override
             public void onTransactionsLoaded(List<Transaction> transactions) {
                 transactionAdapter = new TransactionAdapter(transactions);

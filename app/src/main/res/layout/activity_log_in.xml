@@ -89,9 +89,17 @@
             android:id="@+id/progressBar"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginVertical="5dp"
             android:indeterminateTint="@color/green"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/loadingStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/inputContainer"
+        app:layout_constraintTop_toBottomOf="@id/inputContainer" />
 
     <TextView
         android:id="@+id/createAccount"

@@ -8,9 +8,11 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityProfileUpdateBinding;
+import com.vkohler.wealthtracker.interfaces.LogCallback;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.LogManager;
@@ -43,7 +45,28 @@ public class ProfileUpdateActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.update.setOnClickListener(v -> updateUser());
+        binding.update.setOnClickListener(v -> {
+            binding.update.setVisibility(View.GONE);
+            binding.cancel.setVisibility(View.GONE);
+            binding.progressBar.setVisibility(View.VISIBLE);
+
+            String newUsername = binding.username.getText().toString();
+            String newName = binding.name.getText().toString();
+            String newPassword = binding.password.getText().toString();
+            String confirmNewPassword = binding.confirmPassword.getText().toString();
+
+            logManager.updateLog(newUsername, newName, newPassword, confirmNewPassword, new LogCallback() {
+                @Override
+                public void actionDone() {
+                    binding.update.setVisibility(View.VISIBLE);
+                    binding.cancel.setVisibility(View.VISIBLE);
+                    binding.progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void setMessage(String message) {}
+            });
+        });
         binding.cancel.setOnClickListener(v -> activityManager.startActivity("profile"));
         binding.username.addTextChangedListener(new TextWatcher() {
             @Override
@@ -101,15 +124,6 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
-    }
-
-    private void updateUser() {
-        String newUsername = binding.username.getText().toString();
-        String newName = binding.name.getText().toString();
-        String newPassword = binding.password.getText().toString();
-        String confirmNewPassword = binding.confirmPassword.getText().toString();
-
-        logManager.updateLog(newUsername, newName, newPassword, confirmNewPassword);
     }
 
     private void updateInputUI() {

@@ -2,18 +2,14 @@ package com.vkohler.wealthtracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
 
 import com.vkohler.wealthtracker.R;
-import com.vkohler.wealthtracker.adapters.TransactionAdapter;
 import com.vkohler.wealthtracker.databinding.ActivityHomeBinding;
-import com.vkohler.wealthtracker.interfaces.TransactionCallback;
+import com.vkohler.wealthtracker.interfaces.TransactionManagerCallback;
 import com.vkohler.wealthtracker.models.Transaction;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
@@ -109,7 +105,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void updateProgressBar() {
         List<Transaction> list = new ArrayList<>();
-        transactionManager.getTransactions(new TransactionCallback() {
+        transactionManager.getTransactions(new TransactionManagerCallback() {
             @Override
             public void onTransactionsLoaded(List<Transaction> transactions) {
                 list.clear();

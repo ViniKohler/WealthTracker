@@ -1,9 +1,9 @@
 package com.vkohler.wealthtracker.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.vkohler.wealthtracker.databinding.ActivityLogInBinding;
 import com.vkohler.wealthtracker.interfaces.LogCallback;
@@ -47,9 +47,17 @@ public class LogInActivity extends AppCompatActivity {
             binding.logIn.setVisibility(View.GONE);
             binding.progressBar.setVisibility(View.VISIBLE);
 
-            logManager.logIn(binding.username.getText().toString(), binding.password.getText().toString(), () -> {
-                binding.logIn.setVisibility(View.VISIBLE);
-                binding.progressBar.setVisibility(View.GONE);
+            logManager.logIn(binding.username.getText().toString(), binding.password.getText().toString(), new LogCallback() {
+                @Override
+                public void actionDone() {
+                    binding.logIn.setVisibility(View.VISIBLE);
+                    binding.progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void setMessage(String message) {
+                    binding.loadingStatus.setText(message);
+                }
             });
         });
     }

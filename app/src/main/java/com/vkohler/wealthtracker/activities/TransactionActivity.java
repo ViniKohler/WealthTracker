@@ -15,6 +15,9 @@ import android.view.View;
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.adapters.CategoryAdapter;
 import com.vkohler.wealthtracker.databinding.ActivityTransactionBinding;
+import com.vkohler.wealthtracker.interfaces.TransactionCallback;
+import com.vkohler.wealthtracker.interfaces.TransactionManagerCallback;
+import com.vkohler.wealthtracker.models.Transaction;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.LogManager;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
@@ -24,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class TransactionActivity extends AppCompatActivity {
 
@@ -83,15 +87,37 @@ public class TransactionActivity extends AppCompatActivity {
             updateUI();
         });
         binding.addTransaction.setOnClickListener(v -> {
+            binding.progressBar.setVisibility(View.VISIBLE);
+            binding.addTransaction.setVisibility(View.GONE);
+
             if (category != null && !strValue.isEmpty()) {
+
+                BigDecimal value = null;
+
                 switch (signal) {
                     case "+":
-                        transactionManager.addTransaction(title, bigValue, category, dateTime);
+                        value = bigValue;
+                        binding.progressBar.setIndeterminateTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
                         break;
                     case "-":
-                        transactionManager.addTransaction(title, bigValue.negate(), category, dateTime);
+                        value = bigValue.negate();
+                        binding.progressBar.setIndeterminateTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red)));
                 }
-                binding.x.performClick();
+                transactionManager.addTransaction(title, value, category, dateTime, new TransactionCallback() {
+
+                    @Override
+                    public void transactionSuccess() {
+                        binding.progressBar.setVisibility(View.GONE);
+                        binding.addTransaction.setVisibility(View.VISIBLE);
+                        clearTransactionData();
+                    }
+
+                    @Override
+                    public void transactionFailed() {
+                        binding.progressBar.setVisibility(View.GONE);
+                        binding.addTransaction.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         });
 
