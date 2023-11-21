@@ -1,4 +1,4 @@
-package com.vkohler.wealthtracker;
+package com.vkohler.wealthtracker.fragments;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.FragmentBalanceBarBinding;
 import com.vkohler.wealthtracker.interfaces.TransactionManagerCallback;
 import com.vkohler.wealthtracker.models.Transaction;
@@ -69,15 +71,14 @@ public class BalanceBarFragment extends Fragment {
 
                 if (list.size() != 0) {
 
-                    for (int i = 0; i <= list.size() - 1; i++) {
+                    for (Transaction transaction : list) {
 
-                        BigDecimal value = new BigDecimal(list.get(i).getValue());
+                        BigDecimal value = new BigDecimal(transaction.getValue());
 
                         if (value.compareTo(BigDecimal.ZERO) > 0) {
                             positive = positive.add(value);
 
                             total = total.add(value);
-
                         } else {
                             negative = negative.add(value);
 
@@ -85,38 +86,45 @@ public class BalanceBarFragment extends Fragment {
                         }
                     }
 
-                    BigDecimal percentPositive = positive.multiply(BigDecimal.valueOf(100)).divide(total, RoundingMode.UP);
-                    BigDecimal percentNegative = negative.multiply(BigDecimal.valueOf(100)).divide(total, RoundingMode.UP);
+                    BigDecimal percent = BigDecimal.ZERO;
+
+                    if (positive.intValue() != 0) {
+                        percent = positive.multiply(BigDecimal.valueOf(100)).divide(total, RoundingMode.UP);
+                    }
 
                     if (binding != null) {
-                        binding.positive.post(new Runnable() {
+                        BigDecimal finalPercent = percent;
+                        binding.month.post(new Runnable() {
                             @Override
                             public void run() {
-                                int width = binding.positive.getWidth();
-                                int finalPositiveWidth = percentPositive.intValue() * width / 100;
-                                int finalNegativeWidth = percentNegative.intValue() * width / 100;
-
                                 NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
                                 format.setGroupingUsed(true);
                                 format.setMinimumFractionDigits(2);
 
                                 String positiveValue = "$ " + format.format(positive);
-                                String negativeValue = "-$ " + format.format(negative.abs());
+                                String negativeValue = "$ " + format.format(negative.abs());
 
-                                int green = ContextCompat.getColor(context, R.color.green);
-                                int red = ContextCompat.getColor(context, R.color.red);
-
-                                binding.positive.getLayoutParams().width = finalPositiveWidth;
-
-                                binding.positiveValue.setTextColor(green);
-                                binding.positive.setBackgroundTintList(ColorStateList.valueOf(green));
-                                binding.negativeValue.setTextColor(red);
+                                if (finalPercent.intValue() != 0) {
+                                    binding.progressBar.setProgress(finalPercent.intValue());
+                                } else {
+                                    binding.progressBar.setVisibility(View.GONE);
+                                }
 
                                 binding.positiveValue.setText(positiveValue);
                                 binding.negativeValue.setText(negativeValue);
+                            }
+                        });
+                    }
+                } else {
+                    if (binding != null) {
+                        binding.month.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.progressBar.setVisibility(View.GONE);
+                                binding.positiveValue.setVisibility(View.GONE);
+                                binding.negativeValue.setVisibility(View.GONE);
 
-                                binding.positive.requestLayout();
-                                binding.negative.requestLayout();
+                                binding.noTransactionsFound.setVisibility(View.VISIBLE);
                             }
                         });
                     }
@@ -125,6 +133,7 @@ public class BalanceBarFragment extends Fragment {
 
             @Override
             public void onError(String errorMessage) {
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
