@@ -13,6 +13,7 @@ import android.os.Bundle;
 import com.vkohler.wealthtracker.fragments.BalanceBarFragment;
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityHomeBinding;
+import com.vkohler.wealthtracker.fragments.BalanceFragment;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.LogManager;
@@ -45,13 +46,11 @@ public class HomeActivity extends AppCompatActivity {
 
         setListeners();
         updateUI();
-//        updateProgressBar();
     }
 
     private void setListeners() {
         binding.name.setOnClickListener(v -> activityManager.startActivity("profile"));
         binding.logOut.setOnClickListener(v -> logManager.logOut());
-        binding.eye.setOnClickListener(v -> changeVisibility());
         binding.home.setOnClickListener(v -> activityManager.startActivity("home"));
         binding.addButton.setOnClickListener(v -> activityManager.startActivity("transaction"));
         binding.data.setOnClickListener(v -> activityManager.startActivity("data"));
@@ -61,46 +60,23 @@ public class HomeActivity extends AppCompatActivity {
     private void updateUI() {
         try {
             binding.name.setText(preferenceManager.getString(Constants.KEY_NAME));
-            binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
-            changeVisibility();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Fragment fragment = new BalanceBarFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentBalanceBar = fragmentManager.beginTransaction();
-        fragmentBalanceBar.replace(binding.balanceBarFragment.getId(), fragment);
-        fragmentBalanceBar.commit();
-    }
+        Fragment balanceFragment = new BalanceFragment();
+        Fragment balanceBarFragment = new BalanceBarFragment();
 
-    private void changeVisibility() {
-        Boolean visibility = preferenceManager.getBoolean(Constants.KEY_IS_BALANCE_VISIBLE);
-        if (visibility) {
-            binding.visibility.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
-            binding.eye.setColorFilter(ContextCompat.getColor(context, R.color.text_secondary));
-            binding.balance.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
-            binding.currency.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
-            binding.balance.setText("••••");
-            binding.currency.setText("$ ");
-            preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, false);
-        } else {
-            String balance = preferenceManager.getString(Constants.KEY_BALANCE);
-            if (!balance.contains("-")) {
-                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
-                binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.green));
-                binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
-                binding.currency.setText("$ ");
-            } else {
-                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red)));
-                binding.eye.setColorFilter(ContextCompat.getColor(this, R.color.red));
-                binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE).replace("-", ""));
-                binding.currency.setText("-$ ");
-            }
-            binding.balance.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
-            binding.currency.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
-            preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, true);
-        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        FragmentTransaction fragmentBalance = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentBalanceBar = fragmentManager.beginTransaction();
+
+        fragmentBalance.replace(binding.balanceFragment.getId(), balanceFragment);
+        fragmentBalanceBar.replace(binding.balanceBarFragment.getId(), balanceBarFragment);
+
+        fragmentBalance.commit();
+        fragmentBalanceBar.commit();
     }
 
     @Override

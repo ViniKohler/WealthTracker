@@ -46,12 +46,6 @@ public class BalanceBarFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
     private void init() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat month = new SimpleDateFormat("MMMM");
@@ -94,38 +88,34 @@ public class BalanceBarFragment extends Fragment {
 
                     if (binding != null) {
                         BigDecimal finalPercent = percent;
-                        binding.month.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
-                                format.setGroupingUsed(true);
-                                format.setMinimumFractionDigits(2);
+                        binding.month.post(() -> {
+                            NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
+                            format.setGroupingUsed(true);
+                            format.setMinimumFractionDigits(2);
 
-                                String positiveValue = "$ " + format.format(positive);
-                                String negativeValue = "$ " + format.format(negative.abs());
+                            String positiveValue = "$ " + format.format(positive);
+                            String negativeValue = "$ " + format.format(negative.abs());
 
-                                if (finalPercent.intValue() != 0) {
-                                    binding.progressBar.setProgress(finalPercent.intValue());
-                                } else {
-                                    binding.progressBar.setVisibility(View.GONE);
-                                }
-
-                                binding.positiveValue.setText(positiveValue);
-                                binding.negativeValue.setText(negativeValue);
+                            if (finalPercent.intValue() != 0) {
+                                binding.progressBar.setProgress(finalPercent.intValue());
+                            } else {
+                                binding.progressBar.setVisibility(View.GONE);
                             }
+
+                            binding.positiveValue.setText(positiveValue);
+                            binding.negativeValue.setText(negativeValue);
                         });
                     }
                 } else {
                     if (binding != null) {
-                        binding.month.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                binding.progressBar.setVisibility(View.GONE);
-                                binding.positiveValue.setVisibility(View.GONE);
-                                binding.negativeValue.setVisibility(View.GONE);
+                        binding.month.post(() -> {
+                            binding.progressBar.setVisibility(View.GONE);
+                            binding.positiveValue.setVisibility(View.GONE);
+                            binding.greenBall.setVisibility(View.GONE);
+                            binding.negativeValue.setVisibility(View.GONE);
+                            binding.redBall.setVisibility(View.GONE);
 
-                                binding.noTransactionsFound.setVisibility(View.VISIBLE);
-                            }
+                            binding.noTransactionsFound.setVisibility(View.VISIBLE);
                         });
                     }
                 }
@@ -136,5 +126,11 @@ public class BalanceBarFragment extends Fragment {
                 Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

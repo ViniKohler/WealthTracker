@@ -40,82 +40,19 @@
             app:tint="@color/white" />
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/balanceContainer"
+    <FrameLayout
+        android:id="@+id/balanceFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:background="@drawable/corner"
-        android:backgroundTint="@color/background_light"
-        android:padding="10dp"
-        app:layout_constraintTop_toBottomOf="@id/header">
-
-        <View
-            android:id="@+id/visibility"
-            android:layout_width="5dp"
-            android:layout_height="0dp"
-            android:background="@drawable/light_black_corner"
-            android:backgroundTint="@color/green"
-            app:layout_constraintBottom_toBottomOf="@id/currency"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/balanceText" />
-
-        <TextView
-            android:id="@+id/balanceText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="Balance"
-            android:textColor="@color/text_secondary"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@id/currency"
-            app:layout_constraintStart_toEndOf="@id/visibility"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/currency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="$ "
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/visibility"
-            app:layout_constraintTop_toBottomOf="@id/balanceText" />
-
-        <TextView
-            android:id="@+id/balance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0.00"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/currency"
-            app:layout_constraintStart_toEndOf="@id/currency"
-            app:layout_constraintTop_toTopOf="@id/currency" />
-
-        <ImageView
-            android:id="@+id/eye"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="7dp"
-            android:src="@drawable/ic_eye"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/green" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header" />
 
     <FrameLayout
         android:id="@+id/balanceBarFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/balanceContainer"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/balanceFragment" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footer"
