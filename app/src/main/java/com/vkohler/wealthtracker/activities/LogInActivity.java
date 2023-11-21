@@ -28,7 +28,7 @@ public class LogInActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
 
         if (preferenceManager.getBoolean(Constants.KEY_IS_LOGGED_IN)) {
-            activityManager.startActivity("home");
+            activityManager.startActivity("main");
         }
 
         binding = ActivityLogInBinding.inflate(getLayoutInflater());

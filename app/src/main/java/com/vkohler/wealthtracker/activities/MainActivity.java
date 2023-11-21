@@ -9,11 +9,13 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.view.View;
 
+import com.vkohler.wealthtracker.databinding.ActivityMainBinding;
 import com.vkohler.wealthtracker.fragments.BalanceBarFragment;
 import com.vkohler.wealthtracker.R;
-import com.vkohler.wealthtracker.databinding.ActivityHomeBinding;
 import com.vkohler.wealthtracker.fragments.BalanceFragment;
+import com.vkohler.wealthtracker.fragments.TransactionsListFragment;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.LogManager;
@@ -21,20 +23,20 @@ import com.vkohler.wealthtracker.utilities.PreferenceManager;
 import com.vkohler.wealthtracker.utilities.TransactionManager;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     ActivityManager activityManager;
     LogManager logManager;
     PreferenceManager preferenceManager;
     TransactionManager transactionManager;
-    ActivityHomeBinding binding;
+    ActivityMainBinding binding;
     Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
-        binding = ActivityHomeBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         activityManager = new ActivityManager(getApplicationContext());
         logManager = new LogManager(getApplicationContext());
         preferenceManager = new PreferenceManager(getApplicationContext());
@@ -51,10 +53,29 @@ public class HomeActivity extends AppCompatActivity {
     private void setListeners() {
         binding.name.setOnClickListener(v -> activityManager.startActivity("profile"));
         binding.logOut.setOnClickListener(v -> logManager.logOut());
-        binding.home.setOnClickListener(v -> activityManager.startActivity("home"));
+        binding.home.setOnClickListener(v -> {
+            binding.transactionsListFragment.setVisibility(View.GONE);
+            binding.balanceFragment.setVisibility(View.VISIBLE);
+            binding.balanceBarFragment.setVisibility(View.VISIBLE);
+            binding.home.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
+            binding.data.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
+
+        });
         binding.addButton.setOnClickListener(v -> activityManager.startActivity("transaction"));
-        binding.data.setOnClickListener(v -> activityManager.startActivity("data"));
-        binding.balanceBarFragment.setOnClickListener(v -> activityManager.startActivity("data"));
+        binding.data.setOnClickListener(v -> {
+            binding.balanceFragment.setVisibility(View.GONE);
+            binding.balanceBarFragment.setVisibility(View.GONE);
+            binding.transactionsListFragment.setVisibility(View.VISIBLE);
+            binding.home.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
+            binding.data.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
+        });
+        binding.balanceBarFragment.setOnClickListener(v -> {
+            binding.balanceFragment.setVisibility(View.GONE);
+            binding.balanceBarFragment.setVisibility(View.GONE);
+            binding.transactionsListFragment.setVisibility(View.VISIBLE);
+            binding.home.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
+            binding.data.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
+        });
     }
 
     private void updateUI() {
@@ -66,17 +87,16 @@ public class HomeActivity extends AppCompatActivity {
 
         Fragment balanceFragment = new BalanceFragment();
         Fragment balanceBarFragment = new BalanceBarFragment();
+        Fragment transactionsListFragment = new TransactionsListFragment();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        FragmentTransaction fragmentBalance = fragmentManager.beginTransaction();
-        FragmentTransaction fragmentBalanceBar = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(binding.balanceFragment.getId(), balanceFragment);
+        fragmentTransaction.replace(binding.balanceBarFragment.getId(), balanceBarFragment);
+        fragmentTransaction.replace(binding.transactionsListFragment.getId(), transactionsListFragment);
 
-        fragmentBalance.replace(binding.balanceFragment.getId(), balanceFragment);
-        fragmentBalanceBar.replace(binding.balanceBarFragment.getId(), balanceBarFragment);
-
-        fragmentBalance.commit();
-        fragmentBalanceBar.commit();
+        fragmentTransaction.commit();
     }
 
     @Override

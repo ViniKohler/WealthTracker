@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/background_dark"
-    tools:context=".activities.HomeActivity">
+    tools:context=".activities.MainActivity">
 
     <LinearLayout
         android:id="@+id/header"
@@ -53,6 +53,16 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/balanceFragment" />
+
+    <FrameLayout
+        android:id="@+id/transactionsListFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/footer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/header" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footer"

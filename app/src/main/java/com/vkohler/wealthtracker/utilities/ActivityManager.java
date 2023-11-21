@@ -4,8 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.vkohler.wealthtracker.activities.DataActivity;
-import com.vkohler.wealthtracker.activities.HomeActivity;
+import com.vkohler.wealthtracker.activities.MainActivity;
 import com.vkohler.wealthtracker.activities.LogInActivity;
 import com.vkohler.wealthtracker.activities.LogOnActivity;
 import com.vkohler.wealthtracker.activities.ProfileActivity;
@@ -31,14 +30,11 @@ public class ActivityManager {
             case "logon":
                 newActivity = LogOnActivity.class;
                 break;
-            case "home":
-                newActivity = HomeActivity.class;
+            case "main":
+                newActivity = MainActivity.class;
                 break;
             case "transaction":
                 newActivity = TransactionActivity.class;
-                break;
-            case "data":
-                newActivity = DataActivity.class;
                 break;
             case "profile":
                 newActivity = ProfileActivity.class;
@@ -56,10 +52,6 @@ public class ActivityManager {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-    }
-
-    public void startLastActivity() {
-        startActivity(preferenceManager.getString(Constants.KEY_LAST_ACTIVITY));
     }
 
     public void setLastActivity(String lastActivity) {

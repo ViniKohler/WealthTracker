@@ -37,7 +37,8 @@ public class TransactionActivity extends AppCompatActivity {
     TransactionManager transactionManager;
     ActivityTransactionBinding binding;
     Context context;
-    String title, signal;
+    String title = "";
+    String signal = "";
     String category = "";
     String strValue = "";
     BigDecimal bigValue;
@@ -63,7 +64,7 @@ public class TransactionActivity extends AppCompatActivity {
 
 
     private void setListeners() {
-        binding.back.setOnClickListener(v -> activityManager.startLastActivity());
+        binding.back.setOnClickListener(v -> activityManager.startActivity("main"));
         binding.x.setOnClickListener(v -> clearTransactionData());
         binding.backspace.setOnClickListener(v -> {
             strValue = strValue.substring(0, strValue.length() - 1);
@@ -90,7 +91,7 @@ public class TransactionActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.VISIBLE);
             binding.addTransaction.setVisibility(View.GONE);
 
-            if (category != null && !strValue.isEmpty()) {
+            if (category != "" && strValue != "") {
 
                 BigDecimal value = null;
 
@@ -194,7 +195,7 @@ public class TransactionActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP:
                         float endY = event.getY();
                         if (endY - 300 > startY) {
-                            activityManager.startLastActivity();
+                            activityManager.startActivity("main");
                         }
                         break;
                 }
@@ -206,7 +207,7 @@ public class TransactionActivity extends AppCompatActivity {
     private void updateUI() {
 
         if (!strValue.isEmpty()) {
-//            bigValue = new BigDecimal(strValue).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
+            bigValue = new BigDecimal(strValue).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
             BigDecimal value = new BigDecimal(strValue);
             BigDecimal dividedValue = value.divide(BigDecimal.valueOf(100));
             bigValue = dividedValue.setScale(2, RoundingMode.HALF_UP);
@@ -219,7 +220,7 @@ public class TransactionActivity extends AppCompatActivity {
             binding.x.setVisibility(View.GONE);
         }
 
-        if (!strValue.isEmpty() && signal != null && !category.isEmpty()) {
+        if (strValue != "" && signal != "" && category != "") {
             binding.addTransaction.setVisibility(View.VISIBLE);
         }
 
@@ -285,8 +286,8 @@ public class TransactionActivity extends AppCompatActivity {
 
     private void clearTransactionData() {
         strValue = "";
-        signal = null;
-        category = null;
+        signal = "";
+        category = "";
         updateUI();
         changeStrokeColor("white");
         binding.buttonMinus.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.background_dark)));
@@ -300,6 +301,6 @@ public class TransactionActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        activityManager.startLastActivity();
+        activityManager.startActivity("main");
     }
 }

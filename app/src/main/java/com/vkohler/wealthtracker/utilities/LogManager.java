@@ -60,7 +60,7 @@ public class LogManager {
                                         preferenceManager.putString(Constants.KEY_BALANCE, walletSnapshot.getString(Constants.KEY_BALANCE));
                                         callback.actionDone();
                                     })
-                                    .addOnCompleteListener(completeTask -> activityManager.startActivity("home"));
+                                    .addOnCompleteListener(completeTask -> activityManager.startActivity("main"));
                         }
                     }).addOnFailureListener(e -> {
                         callback.setMessage("Unable to log in");
@@ -113,7 +113,7 @@ public class LogManager {
 
                                     callback.actionDone();
 
-                                    activityManager.startActivity("home");
+                                    activityManager.startActivity("main");
                                 }).addOnFailureListener(e -> {
                                     callback.actionDone();
                                     callback.setMessage("Unable to log on");
