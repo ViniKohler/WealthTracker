@@ -28,7 +28,6 @@ public class UserFragment extends Fragment {
     LogManager logManager;
 
     String name, username, password;
-    Boolean passwordIsVisible;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

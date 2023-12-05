@@ -4,9 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.vkohler.wealthtracker.activities.LogActivity;
 import com.vkohler.wealthtracker.activities.MainActivity;
-import com.vkohler.wealthtracker.activities.LogInActivity;
-import com.vkohler.wealthtracker.activities.LogOnActivity;
 import com.vkohler.wealthtracker.activities.ProfileActivity;
 import com.vkohler.wealthtracker.activities.TransactionActivity;
 
@@ -23,11 +22,8 @@ public class ActivityManager {
     public void startActivity(String activityName) {
         Class<?> newActivity = null;
         switch (activityName) {
-            case "login":
-                newActivity = LogInActivity.class;
-                break;
-            case "logon":
-                newActivity = LogOnActivity.class;
+            case "log":
+                newActivity = LogActivity.class;
                 break;
             case "main":
                 newActivity = MainActivity.class;

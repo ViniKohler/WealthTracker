@@ -149,7 +149,7 @@ public class LogManager {
 
     public void logOut() {
         preferenceManager.clear();
-        activityManager.startActivity("login");
+        activityManager.startActivity("log");
     }
 
     public void updateLog(String newUsername, String newName, String newPassword, String confirmNewPassword, LogCallback callback) {
