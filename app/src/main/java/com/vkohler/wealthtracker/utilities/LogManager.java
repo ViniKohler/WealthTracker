@@ -48,7 +48,6 @@ public class LogManager {
                             preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
                             preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD));
                             preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, true);
-                            preferenceManager.putString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL, "0");
 
                             database.collection(Constants.KEY_COLLECTION_WALLETS)
                                     .whereEqualTo(Constants.KEY_USER_ID, documentSnapshot.getId())
@@ -99,7 +98,6 @@ public class LogManager {
                         preferenceManager.putString(Constants.KEY_NAME, name);
                         preferenceManager.putString(Constants.KEY_PASSWORD, password);
                         preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, true);
-                        preferenceManager.putString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL, "0");
 
                         HashMap<String, Object> wallet = new HashMap<>();
                         wallet.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));

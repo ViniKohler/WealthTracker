@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/background_dark"
     tools:context=".activities.ProfileActivity">
 
@@ -18,172 +19,39 @@
         app:tint="@color/text_primary" />
 
     <ImageView
+        android:id="@+id/profilePicture"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/ic_user"
-        app:layout_constraintBottom_toTopOf="@id/userDataContainer"
+        app:layout_constraintBottom_toTopOf="@id/userFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/text_primary" />
 
-    <LinearLayout
-        android:id="@+id/userDataContainer"
+    <FrameLayout
+        android:id="@+id/userFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:background="@color/background_light"
-        android:orientation="vertical"
-        android:padding="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="name"
-            android:textColor="@color/text_secondary" />
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="20dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="username"
-            android:textColor="@color/text_secondary" />
-
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Username"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="20dp" />
-
-        <TextView
-            android:id="@+id/passwordText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="*password"
-            android:textColor="@color/text_secondary" />
-
-        <TextView
-            android:id="@+id/password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:text="Password"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/passwordHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="* Click the password to toggle it on and off."
-        android:textColor="@color/text_secondary"
-        app:layout_constraintStart_toStartOf="@id/userDataContainer"
-        app:layout_constraintTop_toBottomOf="@id/userDataContainer" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/edit"
-        android:layout_width="40dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="5dp"
-        android:backgroundTint="@color/background_dark"
-        android:drawableBottom="@drawable/ic_edit"
-        android:drawableTint="@color/text_primary"
-        app:layout_constraintEnd_toStartOf="@id/delete"
-        app:layout_constraintTop_toTopOf="@id/userDataContainer" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/delete"
-        android:layout_width="40dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="7dp"
-        android:backgroundTint="@color/red"
-        android:drawableBottom="@drawable/ic_delete"
-        android:drawableTint="@color/text_primary"
-        app:layout_constraintEnd_toEndOf="@id/userDataContainer"
-        app:layout_constraintTop_toTopOf="@id/userDataContainer" />
-
-    <LinearLayout
-        android:id="@+id/deletePanel"
+    <FrameLayout
+        android:id="@+id/updateUserFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background_transparent"
-        android:gravity="center"
-        android:visibility="gone">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:background="@color/background_light"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
-                android:gravity="center_horizontal"
-                android:text="Delete your account?"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="20dp" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/deleteUser"
-                    android:layout_width="100dp"
-                    android:layout_height="50dp"
-                    android:backgroundTint="@color/red"
-                    android:text="Delete"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="20dp"
-                    android:layout_height="0dp" />
-
-                <Button
-                    android:id="@+id/cancelDelete"
-                    android:layout_width="100dp"
-                    android:layout_height="50dp"
-                    android:backgroundTint="@color/background_dark"
-                    android:text="Cancel"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
+    <FrameLayout
+        android:id="@+id/deleteUserFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

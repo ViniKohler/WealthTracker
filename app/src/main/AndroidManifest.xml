@@ -13,13 +13,7 @@
         android:theme="@style/Theme.WealthTracker"
         tools:targetApi="31">
         <activity
-            android:name=".activities.ProfileUpdateActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.LogOnActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.DataActivity"
             android:exported="false" />
         <activity
             android:name=".activities.TransactionActivity"

@@ -48,7 +48,8 @@ public class BalanceBarFragment extends Fragment {
 
     private void init() {
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat month = new SimpleDateFormat("MMMM");
+        Locale locale = new Locale("en", "US");
+        SimpleDateFormat month = new SimpleDateFormat("MMMM", locale);
         String monthString = month.format(cal.getTime());
         binding.month.setText(monthString);
 

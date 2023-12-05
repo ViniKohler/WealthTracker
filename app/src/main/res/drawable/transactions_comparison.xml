@@ -12,7 +12,7 @@
             <layer-list>
                 <item>
                     <shape android:shape="oval">
-                        <corners android:radius="100dp" />
+                        <corners android:radius="5dp" />
                         <solid android:color="@color/white" />
                     </shape>
                 </item>
@@ -20,7 +20,7 @@
                 <item android:id="@android:id/background">
                     <clip>
                         <shape android:shape="rectangle">
-                            <corners android:radius="100dp" />
+                            <corners android:radius="5dp" />
                             <solid android:color="@color/green" />
                         </shape>
                     </clip>
