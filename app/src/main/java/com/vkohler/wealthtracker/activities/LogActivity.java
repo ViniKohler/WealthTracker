@@ -8,9 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
 
-import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.ActivityLogBinding;
-import com.vkohler.wealthtracker.databinding.ActivityLogInBinding;
 import com.vkohler.wealthtracker.fragments.LoginFragment;
 import com.vkohler.wealthtracker.fragments.LogonFragment;
 import com.vkohler.wealthtracker.utilities.ActivityManager;

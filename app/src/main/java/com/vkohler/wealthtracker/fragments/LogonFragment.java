@@ -56,7 +56,7 @@ public class LogonFragment extends Fragment {
 
                 @Override
                 public void setMessage(String message) {
-
+                    binding.loadingStatus.setText(message);
                 }
             });
         });

@@ -60,9 +60,13 @@ public class LogManager {
                                         callback.actionDone();
                                     })
                                     .addOnCompleteListener(completeTask -> activityManager.startActivity("main"));
+                        } else {
+                            callback.actionDone();
+                            callback.setMessage("Unable to login");
                         }
                     }).addOnFailureListener(e -> {
-                        callback.setMessage("Unable to log in");
+                        callback.actionDone();
+                        callback.setMessage("Unable to login");
                         showToast(e.getMessage());
                     });
         }
@@ -82,47 +86,57 @@ public class LogManager {
 
     public void logOn(String username, String name, String password, String confirmPassword, LogCallback callback) {
         if (authLogOn(username, name, password, confirmPassword)) {
-            callback.setMessage("Logging in");
-            FirebaseFirestore database = FirebaseFirestore.getInstance();
-            HashMap<String, Object> user = new HashMap<>();
-            user.put(Constants.KEY_USERNAME, username);
-            user.put(Constants.KEY_NAME, name);
-            user.put(Constants.KEY_PASSWORD, password);
-            database.collection(Constants.KEY_COLLECTION_USERS)
-                    .add(user)
-                    .addOnSuccessListener(userReference -> {
+            checkIfUsernameIsAvailable(username, new UsernameAvailabilityCallback() {
+                @Override
+                public void onResult(boolean isAvailable) {
+                    if (isAvailable) {
+                        callback.setMessage("Logging on");
+                        FirebaseFirestore database = FirebaseFirestore.getInstance();
+                        HashMap<String, Object> user = new HashMap<>();
+                        user.put(Constants.KEY_USERNAME, username);
+                        user.put(Constants.KEY_NAME, name);
+                        user.put(Constants.KEY_PASSWORD, password);
+                        database.collection(Constants.KEY_COLLECTION_USERS)
+                                .add(user)
+                                .addOnSuccessListener(userReference -> {
 
-                        preferenceManager.putBoolean(Constants.KEY_IS_LOGGED_IN, true);
-                        preferenceManager.putString(Constants.KEY_USER_ID, userReference.getId());
-                        preferenceManager.putString(Constants.KEY_USERNAME, username);
-                        preferenceManager.putString(Constants.KEY_NAME, name);
-                        preferenceManager.putString(Constants.KEY_PASSWORD, password);
-                        preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, true);
+                                    preferenceManager.putBoolean(Constants.KEY_IS_LOGGED_IN, true);
+                                    preferenceManager.putString(Constants.KEY_USER_ID, userReference.getId());
+                                    preferenceManager.putString(Constants.KEY_USERNAME, username);
+                                    preferenceManager.putString(Constants.KEY_NAME, name);
+                                    preferenceManager.putString(Constants.KEY_PASSWORD, password);
+                                    preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, true);
 
-                        HashMap<String, Object> wallet = new HashMap<>();
-                        wallet.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
-                        wallet.put(Constants.KEY_BALANCE, "0.00");
-                        database.collection(Constants.KEY_COLLECTION_WALLETS)
-                                .add(wallet)
-                                .addOnSuccessListener(walletReference -> {
+                                    HashMap<String, Object> wallet = new HashMap<>();
+                                    wallet.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
+                                    wallet.put(Constants.KEY_BALANCE, "0.00");
+                                    database.collection(Constants.KEY_COLLECTION_WALLETS)
+                                            .add(wallet)
+                                            .addOnSuccessListener(walletReference -> {
+                                                preferenceManager.putString(Constants.KEY_WALLET_ID, walletReference.getId());
+                                                preferenceManager.putString(Constants.KEY_BALANCE, "0.00");
 
-                                    preferenceManager.putString(Constants.KEY_WALLET_ID, walletReference.getId());
-                                    preferenceManager.putString(Constants.KEY_BALANCE, "0.00");
+                                                callback.actionDone();
 
-                                    callback.actionDone();
-
-                                    activityManager.startActivity("main");
-                                }).addOnFailureListener(e -> {
-                                    callback.actionDone();
-                                    callback.setMessage("Unable to log on");
+                                                callback.setMessage("Logging in...");
+                                                activityManager.startActivity("main");
+                                            }).addOnFailureListener(e -> {
+                                                callback.actionDone();
+                                                callback.setMessage("Unable to logon");
+                                                showToast(e.getMessage());
+                                                logOut();
+                                            });
+                                })
+                                .addOnFailureListener(e -> {
+                                    callback.setMessage("Unable to logon");
                                     showToast(e.getMessage());
-                                    logOut();
                                 });
-                    })
-                    .addOnFailureListener(e -> {
-                        callback.setMessage("Unable to log on");
-                        showToast(e.getMessage());
-                    });
+                    } else {
+                        callback.setMessage("Unavailable username");
+                        callback.actionDone();
+                    }
+                }
+            });
         }
     }
 
@@ -145,6 +159,24 @@ public class LogManager {
         } else {
             return true;
         }
+    }
+
+    private void checkIfUsernameIsAvailable(String username, UsernameAvailabilityCallback callback) {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        database.collection(Constants.KEY_COLLECTION_USERS)
+                .whereEqualTo(Constants.KEY_USERNAME, username)
+                .get()
+                .addOnCompleteListener(userTask -> {
+                    callback.onResult(userTask.getResult().size() <= 0);
+                })
+                .addOnFailureListener(e -> {
+                    showToast(e.getMessage());
+                });
+    }
+
+    public interface UsernameAvailabilityCallback {
+        void onResult(boolean isAvailable);
     }
 
     public void logOut() {
