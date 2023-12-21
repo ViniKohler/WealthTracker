@@ -50,4 +50,8 @@ public class ActivityManager {
         preferenceManager.putString(Constants.KEY_LAST_ACTIVITY, lastActivity);
     }
 
+    public String getLastActivity() {
+        return preferenceManager.getString(Constants.KEY_LAST_ACTIVITY);
+    }
+
 }

@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         transactionManager = new TransactionManager(getApplicationContext());
 
-        activityManager.setLastActivity("home");
         overridePendingTransition(0, 0);
         setContentView(binding.getRoot());
 
@@ -54,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         binding.name.setOnClickListener(v -> activityManager.startActivity("profile"));
         binding.logOut.setOnClickListener(v -> logManager.logOut());
         binding.home.setOnClickListener(v -> {
+            preferenceManager.putString(Constants.KEY_LAST_ACTIVITY, "home");
             binding.transactionsListFragment.setVisibility(View.GONE);
             binding.balanceFragment.setVisibility(View.VISIBLE);
             binding.balanceBarFragment.setVisibility(View.VISIBLE);
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.addButton.setOnClickListener(v -> activityManager.startActivity("transaction"));
         binding.data.setOnClickListener(v -> {
+            preferenceManager.putString(Constants.KEY_LAST_ACTIVITY, "data");
             binding.balanceFragment.setVisibility(View.GONE);
             binding.balanceBarFragment.setVisibility(View.GONE);
             binding.transactionsListFragment.setVisibility(View.VISIBLE);
@@ -97,6 +98,14 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(binding.transactionsListFragment.getId(), transactionsListFragment);
 
         fragmentTransaction.commit();
+
+        switch (activityManager.getLastActivity()) {
+            case "home":
+                binding.home.performClick();
+                break;
+            case "data":
+                binding.data.performClick();
+        }
     }
 
     @Override
