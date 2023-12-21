@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.WindowDecorActionBar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +32,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_category, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_category_2, parent, false);
         return new CategoryViewHolder(view);
     }
 
@@ -89,14 +91,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
 
         holder.categoryIcon.setImageIcon(icon);
+        holder.category.setText(category);
 
-        if (position == selectedItemPosition) {
-            holder.itemView.setBackground(ContextCompat.getDrawable(context, R.drawable.white_corner));
-            holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.background_dark)));
-        } else {
-            holder.itemView.setBackground(ContextCompat.getDrawable(context, R.drawable.stroke_white_corner));
-            holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.text_primary)));
-        }
+        //if (position == selectedItemPosition) {
+        //    holder.itemView.setBackground(ContextCompat.getDrawable(context, R.drawable.white_corner));
+        ///    holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.background_dark)));
+        //} else {
+        //    holder.itemView.setBackground(ContextCompat.getDrawable(context, R.drawable.stroke_white_corner));
+        //    holder.categoryIcon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.text_primary)));
+        //}
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -124,10 +127,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
         public ImageView categoryIcon;
+        public TextView category;
 
         public CategoryViewHolder(View itemView) {
             super(itemView);
             categoryIcon = itemView.findViewById(R.id.categoryIcon);
+            category = itemView.findViewById(R.id.category);
         }
     }
 
