@@ -124,8 +124,6 @@ public class AddTransactionFragment extends Fragment {
 
             dateTime = new Date(year, month, day);
 
-            Toast.makeText(context, String.valueOf(dateTime), Toast.LENGTH_SHORT).show();
-
             binding.addTransaction.setVisibility(View.GONE);
             binding.progressBar.setVisibility(View.VISIBLE);
 
@@ -133,6 +131,7 @@ public class AddTransactionFragment extends Fragment {
                 @Override
                 public void transactionSuccess() {
                     binding.addTransaction.setVisibility(View.VISIBLE);
+                    clearInput();
                 }
 
                 @Override

@@ -16,7 +16,11 @@ import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.models.Transaction;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
     private final List<Transaction> transactionList;
@@ -98,8 +102,16 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         holder.categoryIcon.setBackground(ContextCompat.getDrawable(context, background));
         holder.categoryIcon.setImageIcon(icon.setTint(ContextCompat.getColor(context, R.color.text_primary)));
-        holder.category.setText(transaction.getCategory());
-        holder.value.setText(value.replace("-", ""));
+
+        holder.title.setText(transaction.getTitle());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        holder.dateTime.setText(sdf.format(transaction.getDateTime()));
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        String formattedValue = decimalFormat.format(new BigDecimal(value).abs());
+
+        holder.value.setText(formattedValue);
     }
 
     @Override
@@ -108,15 +120,16 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
-        public TextView category, currency, value;
+        public TextView title, dateTime, currency, value;
         public ImageView categoryIcon;
 
         public TransactionViewHolder(View itemView) {
             super(itemView);
-            category = itemView.findViewById(R.id.category);
             categoryIcon = itemView.findViewById(R.id.categoryIcon);
             currency = itemView.findViewById(R.id.currency);
             value = itemView.findViewById(R.id.value);
+            title = itemView.findViewById(R.id.title);
+            dateTime = itemView.findViewById(R.id.dateTime);
         }
     }
 
