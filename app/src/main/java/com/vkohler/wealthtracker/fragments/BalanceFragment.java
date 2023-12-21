@@ -21,6 +21,7 @@ import com.vkohler.wealthtracker.utilities.TransactionManager;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class BalanceFragment extends Fragment {
     PreferenceManager preferenceManager;
     TransactionManager transactionManager;
     Context context;
+    ColorStateList green, red, text_primary, text_secondary;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,8 +46,16 @@ public class BalanceFragment extends Fragment {
     }
 
     private void init() {
+        setColors();
         updateValues();
         setListeners();
+    }
+
+    private void setColors() {
+        green = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green));
+        red = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red));
+        text_primary = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_primary));
+        text_secondary = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary));
     }
 
     private void updateValues() {
@@ -69,7 +79,17 @@ public class BalanceFragment extends Fragment {
                 }
 
                 if (binding != null) {
-                    binding.balance.setText(total.toString());
+
+                    DecimalFormat decimalFormat = new DecimalFormat("0.00");
+                    String strTotal = decimalFormat.format(total.abs());
+
+                    binding.balance.setText(strTotal);
+
+                    if (total.compareTo(BigDecimal.ZERO) < 0) { // if total < 0
+                        binding.visibility.setBackgroundTintList(red);
+                        binding.eye.setImageTintList(red);
+                        binding.currency.setText("-$ ");
+                    }
                 }
             }
 
@@ -87,28 +107,28 @@ public class BalanceFragment extends Fragment {
     private void changeVisibility() {
         Boolean visibility = preferenceManager.getBoolean(Constants.KEY_IS_BALANCE_VISIBLE);
         if (visibility) {
-            binding.visibility.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_secondary)));
-            binding.eye.setColorFilter(ContextCompat.getColor(context, R.color.text_secondary));
-            binding.balance.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
-            binding.currency.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
+            binding.visibility.setBackgroundTintList(text_secondary);
+            binding.eye.setImageTintList(text_secondary);
+            binding.balance.setTextColor(text_secondary);
+            binding.currency.setTextColor(text_secondary);
             binding.balance.setText("••••");
             binding.currency.setText("$ ");
             preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, false);
         } else {
             String balance = preferenceManager.getString(Constants.KEY_BALANCE);
             if (!balance.contains("-")) {
-                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green)));
-                binding.eye.setColorFilter(ContextCompat.getColor(context, R.color.green));
+                binding.visibility.setBackgroundTintList(green);
+                binding.eye.setImageTintList(green);
                 binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
                 binding.currency.setText("$ ");
             } else {
-                binding.visibility.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red)));
-                binding.eye.setColorFilter(ContextCompat.getColor(context, R.color.red));
+                binding.visibility.setBackgroundTintList(red);
+                binding.eye.setImageTintList(red);
                 binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE).replace("-", ""));
                 binding.currency.setText("-$ ");
             }
-            binding.balance.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
-            binding.currency.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
+            binding.balance.setTextColor(text_primary);
+            binding.currency.setTextColor(text_primary);
             preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, true);
         }
     }
