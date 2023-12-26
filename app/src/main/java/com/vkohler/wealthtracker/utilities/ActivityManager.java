@@ -4,12 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.vkohler.wealthtracker.activities.DataActivity;
-import com.vkohler.wealthtracker.activities.HomeActivity;
-import com.vkohler.wealthtracker.activities.LogInActivity;
-import com.vkohler.wealthtracker.activities.LogOnActivity;
+import com.vkohler.wealthtracker.activities.LogActivity;
+import com.vkohler.wealthtracker.activities.MainActivity;
 import com.vkohler.wealthtracker.activities.ProfileActivity;
-import com.vkohler.wealthtracker.activities.ProfileUpdateActivity;
 import com.vkohler.wealthtracker.activities.TransactionActivity;
 
 public class ActivityManager {
@@ -25,26 +22,17 @@ public class ActivityManager {
     public void startActivity(String activityName) {
         Class<?> newActivity = null;
         switch (activityName) {
-            case "login":
-                newActivity = LogInActivity.class;
+            case "log":
+                newActivity = LogActivity.class;
                 break;
-            case "logon":
-                newActivity = LogOnActivity.class;
-                break;
-            case "home":
-                newActivity = HomeActivity.class;
+            case "main":
+                newActivity = MainActivity.class;
                 break;
             case "transaction":
                 newActivity = TransactionActivity.class;
                 break;
-            case "data":
-                newActivity = DataActivity.class;
-                break;
             case "profile":
                 newActivity = ProfileActivity.class;
-                break;
-            case "updateProfile":
-                newActivity = ProfileUpdateActivity.class;
                 break;
         }
         Intent intent = new Intent(context, newActivity);
@@ -58,12 +46,12 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public void startLastActivity() {
-        startActivity(preferenceManager.getString(Constants.KEY_LAST_ACTIVITY));
-    }
-
     public void setLastActivity(String lastActivity) {
         preferenceManager.putString(Constants.KEY_LAST_ACTIVITY, lastActivity);
+    }
+
+    public String getLastActivity() {
+        return preferenceManager.getString(Constants.KEY_LAST_ACTIVITY);
     }
 
 }

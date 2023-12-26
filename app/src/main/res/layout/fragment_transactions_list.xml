@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginTop="20dp"
+    tools:context=".fragments.TransactionsListFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/transactionRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingHorizontal="10dp"
+        android:paddingBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/recycler_view_transaction" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:indeterminateTint="@color/green"
+        app:layout_constraintBottom_toBottomOf="@id/transactionRecyclerView"
+        app:layout_constraintEnd_toEndOf="@id/transactionRecyclerView"
+        app:layout_constraintStart_toStartOf="@id/transactionRecyclerView"
+        app:layout_constraintTop_toTopOf="@id/transactionRecyclerView" />
+
+    <TextView
+        android:id="@+id/notFound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="no transactions found"
+        android:textColor="@color/text_secondary"
+        android:textSize="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/transactionRecyclerView"
+        app:layout_constraintEnd_toEndOf="@id/transactionRecyclerView"
+        app:layout_constraintStart_toStartOf="@id/transactionRecyclerView"
+        app:layout_constraintTop_toTopOf="@id/transactionRecyclerView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

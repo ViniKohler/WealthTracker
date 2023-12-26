@@ -1,24 +1,28 @@
 package com.vkohler.wealthtracker.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.vkohler.wealthtracker.databinding.ActivityProfileBinding;
+import com.vkohler.wealthtracker.fragments.DeleteUserFragment;
+import com.vkohler.wealthtracker.fragments.UpdateUserFragment;
+import com.vkohler.wealthtracker.fragments.UserFragment;
+import com.vkohler.wealthtracker.interfaces.UserFragmentListener;
 import com.vkohler.wealthtracker.utilities.ActivityManager;
-import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.LogManager;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements UserFragmentListener {
 
     ActivityManager activityManager;
     LogManager logManager;
     PreferenceManager preferenceManager;
     ActivityProfileBinding binding;
-    private boolean isPasswordHidden = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,52 +36,50 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setListeners();
-        updateUI();
+        setFragments();
     }
 
     private void setListeners() {
-        binding.password.setOnClickListener(v -> {
-            if (isPasswordHidden) {
-                binding.password.setInputType(InputType.TYPE_CLASS_TEXT);
-                isPasswordHidden = false;
-                preferenceManager.putString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL, "done");
-            } else {
-                binding.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                isPasswordHidden = true;
-            }
-            binding.passwordHint.setVisibility(View.GONE);
-            binding.passwordText.setText("password");
-        });
-        binding.edit.setOnClickListener(v -> activityManager.startActivity("updateProfile"));
-        binding.delete.setOnClickListener(v -> {
-            binding.deletePanel.setVisibility(View.VISIBLE);
-            binding.edit.setVisibility(View.GONE);
-            binding.delete.setVisibility(View.GONE);
-        });
-        binding.deleteUser.setOnClickListener(v -> logManager.deleteLog());
-        binding.cancelDelete.setOnClickListener(v -> {
-            binding.deletePanel.setVisibility(View.GONE);
-            binding.edit.setVisibility(View.VISIBLE);
-            binding.delete.setVisibility(View.VISIBLE);
-        });
         binding.back.setOnClickListener(v -> {
-            String lastActivity = preferenceManager.getString(Constants.KEY_LAST_ACTIVITY);
-            activityManager.startActivity(lastActivity);
+            activityManager.startActivity("main");
         });
     }
 
-    private void updateUI() {
-        String currentName = preferenceManager.getString(Constants.KEY_NAME);
-        String currentUsername = preferenceManager.getString(Constants.KEY_USERNAME);
-        String currentPassword = preferenceManager.getString(Constants.KEY_PASSWORD);
+    private void setFragments() {
+        Fragment userFragment = new UserFragment();
+        Fragment updateUserFragment = new UpdateUserFragment();
+        Fragment deleteUserFragment = new DeleteUserFragment();
 
-        binding.name.setText(currentName);
-        binding.username.setText(currentUsername);
-        binding.password.setText(currentPassword);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        if (preferenceManager.getString(Constants.KEY_PASSWORD_VISIBILITY_TUTORIAL).equals("done")) {
-            binding.passwordHint.setVisibility(View.GONE);
-            binding.passwordText.setText("password");
+        fragmentTransaction.replace(binding.userFragment.getId(), userFragment);
+        fragmentTransaction.replace(binding.updateUserFragment.getId(), updateUserFragment);
+        fragmentTransaction.replace(binding.deleteUserFragment.getId(), deleteUserFragment);
+
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void changeFragment(String fragment) {
+        switch (fragment) {
+            case "User":
+                binding.profilePicture.setVisibility(View.VISIBLE);
+                binding.userFragment.setVisibility(View.VISIBLE);
+                binding.updateUserFragment.setVisibility(View.GONE);
+                binding.deleteUserFragment.setVisibility(View.GONE);
+                break;
+            case "DeleteUser":
+                binding.profilePicture.setVisibility(View.GONE);
+                binding.userFragment.setVisibility(View.GONE);
+                binding.updateUserFragment.setVisibility(View.GONE);
+                binding.deleteUserFragment.setVisibility(View.VISIBLE);
+                break;
+            case "UpdateUser":
+                binding.profilePicture.setVisibility(View.GONE);
+                binding.userFragment.setVisibility(View.GONE);
+                binding.updateUserFragment.setVisibility(View.VISIBLE);
+                binding.deleteUserFragment.setVisibility(View.GONE);
         }
     }
 }

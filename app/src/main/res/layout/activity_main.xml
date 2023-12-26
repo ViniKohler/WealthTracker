@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/background_dark"
-    tools:context=".activities.DataActivity">
+    tools:context=".activities.MainActivity">
 
     <LinearLayout
         android:id="@+id/header"
@@ -39,44 +40,31 @@
             app:tint="@color/white" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/transactionRecyclerView"
+    <FrameLayout
+        android:id="@+id/balanceFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header" />
+
+    <FrameLayout
+        android:id="@+id/balanceBarFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/balanceFragment" />
+
+    <FrameLayout
+        android:id="@+id/transactionsListFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="20dp"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingHorizontal="10dp"
-        android:paddingBottom="40dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/footer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header"
-        tools:listitem="@layout/recycler_view_transaction" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:indeterminateTint="@color/green"
-        app:layout_constraintBottom_toBottomOf="@id/transactionRecyclerView"
-        app:layout_constraintEnd_toEndOf="@id/transactionRecyclerView"
-        app:layout_constraintStart_toStartOf="@id/transactionRecyclerView"
-        app:layout_constraintTop_toTopOf="@id/transactionRecyclerView" />
-
-    <TextView
-        android:id="@+id/notFound"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="no transactions found"
-        android:textColor="@color/text_secondary"
-        android:textSize="12dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/transactionRecyclerView"
-        app:layout_constraintEnd_toEndOf="@id/transactionRecyclerView"
-        app:layout_constraintStart_toStartOf="@id/transactionRecyclerView"
-        app:layout_constraintTop_toTopOf="@id/transactionRecyclerView" />
+        app:layout_constraintTop_toBottomOf="@id/header" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footer"
@@ -104,7 +92,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/addButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:tint="@color/text_secondary" />
+            app:tint="@color/green" />
 
         <ImageView
             android:id="@+id/addButton"
@@ -129,8 +117,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/addButton"
-            app:tint="@color/green" />
+            app:tint="@color/text_secondary" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

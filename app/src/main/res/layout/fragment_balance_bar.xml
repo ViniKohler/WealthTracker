@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginTop="20dp"
+    android:background="@drawable/corner"
+    android:padding="20dp"
+    tools:context=".fragments.BalanceBarFragment">
+
+    <TextView
+        android:id="@+id/noTransactionsFound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="8dp"
+        android:text="No transactions found"
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/month"
+        app:layout_constraintTop_toBottomOf="@id/month" />
+
+    <TextView
+        android:id="@+id/month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="October"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginTop="10dp"
+        android:max="100"
+        android:progress="100"
+        android:progressDrawable="@drawable/transactions_comparison"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/month" />
+
+    <TextView
+        android:id="@+id/greenBall"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:background="@drawable/corner"
+        android:backgroundTint="@color/green"
+        app:layout_constraintBottom_toBottomOf="@id/positiveValue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/positiveValue" />
+
+    <TextView
+        android:id="@+id/positiveValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="35dp"
+        android:text="$ 0.00"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/greenBall"
+        app:layout_constraintTop_toBottomOf="@id/month" />
+
+    <TextView
+        android:id="@+id/redBall"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:background="@drawable/corner"
+        android:backgroundTint="@color/red"
+        app:layout_constraintBottom_toBottomOf="@id/negativeValue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/negativeValue" />
+
+    <TextView
+        android:id="@+id/negativeValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:text="$ 0.00"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/redBall"
+        app:layout_constraintTop_toTopOf="@id/positiveValue" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
