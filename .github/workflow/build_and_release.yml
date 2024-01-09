@@ -1,4 +1,4 @@
-name: Build APK
+name: Build and Deploy APK
 
 on:
   push:
@@ -10,14 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Show JDK Path
-        run: |
-          echo "JAVA_HOME is $JAVA_HOME"
-          export
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      - name: Show Java Version
-        run: java -version
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '21.0.1'
 
-      - name: Show Available JDKs
-        run: |
-          ls /usr/lib/jvm/
+    - name: Build APK
+      run: |
+        ./gradlew assembleRelease
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: app-release
+        path: app/build/outputs/apk/release/WealthTracker.apk
