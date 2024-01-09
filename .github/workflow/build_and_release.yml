@@ -19,6 +19,9 @@ jobs:
         distribution: 'adopt'
         java-version: '17'
 
+    - name: Set up Gradle
+      run: echo "org.gradle.java.home=$(java -XshowSettings:properties -version 2>&1 | grep 'java.home' | awk '{print $3}')" > gradle.properties
+
     - name: Make Gradlew Executable
       run: chmod +x ./gradlew
 
