@@ -10,30 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '17'
-
       - name: Show JDK Path
         run: |
           echo "JAVA_HOME is $JAVA_HOME"
           export
-          
-      - name: Build with Gradle
-        run: |
-          ./gradlew assembleDebug
-        working-directory: WealthTracker
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v2
-        with:
-          name: app
-          path: WealthTracker/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Show Java Version
         run: java -version
