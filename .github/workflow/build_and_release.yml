@@ -37,3 +37,7 @@ jobs:
 
       - name: Show Java Version
         run: java -version
+
+      - name: Show Available JDKs
+        run: |
+          ls /usr/lib/jvm/
