@@ -3,15 +3,16 @@ package com.vkohler.wealthtracker.fragments;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.adapters.CategoryAdapter;
@@ -20,7 +21,6 @@ import com.vkohler.wealthtracker.interfaces.TransactionCallback;
 import com.vkohler.wealthtracker.utilities.TransactionManager;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -30,8 +30,7 @@ public class AddTransactionFragment extends Fragment {
     TransactionManager transactionManager;
     Context context;
 
-    ColorStateList red;
-    ColorStateList green;
+    ColorStateList red, green, white;
 
     Boolean isPositive = true;
     String title, category;
@@ -46,8 +45,9 @@ public class AddTransactionFragment extends Fragment {
         transactionManager = new TransactionManager(context);
         if (binding != null) {
             init();
+            setListeners();
+            setTextChangedListeners();
         }
-        setListeners();
         return view;
     }
 
@@ -55,6 +55,7 @@ public class AddTransactionFragment extends Fragment {
         updateRecyclerView();
         red = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red));
         green = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green));
+        white = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_primary));
     }
 
     private void updateRecyclerView() {
@@ -76,6 +77,13 @@ public class AddTransactionFragment extends Fragment {
     }
 
     private void setListeners() {
+        binding.inputContainer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                updateUI();
+            }
+        });
+
         binding.category.setOnClickListener(v -> {
             binding.inputContainer.clearFocus();
             if (binding.categoryRecyclerView.getVisibility() != View.VISIBLE) {
@@ -103,6 +111,7 @@ public class AddTransactionFragment extends Fragment {
                 isPositive = true;
                 changeColor(green);
             }
+            binding.inputContainer.clearFocus();
         });
 
         binding.date.setOnClickListener(v -> {
@@ -117,12 +126,6 @@ public class AddTransactionFragment extends Fragment {
             if (!isPositive) {
                 bigValue = bigValue.negate();
             }
-
-            int day = Integer.parseInt(binding.date.getText().toString().substring(0, 2));
-            int month = Integer.parseInt(binding.date.getText().toString().substring(3, 5)) - 1;
-            int year = Integer.parseInt(binding.date.getText().toString().substring(6, 10)) - 1900;
-
-            dateTime = new Date(year, month, day);
 
             binding.addTransaction.setVisibility(View.GONE);
             binding.progressBar.setVisibility(View.VISIBLE);
@@ -143,12 +146,125 @@ public class AddTransactionFragment extends Fragment {
         });
     }
 
+    private void setTextChangedListeners() {
+        binding.title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                updateUI();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        binding.category.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                updateUI();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        binding.value.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                updateUI();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        binding.date.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                if (i2 < i1) {
+                    binding.date.setBackgroundTintList(white);
+                } else {
+                    if (isPositive) {
+                        binding.date.setBackgroundTintList(green);
+                    } else {
+                        binding.date.setBackgroundTintList(red);
+                    }
+                }
+
+                if ((charSequence.length() == 2 || charSequence.length() == 5) && i2 > 0) {
+                    binding.date.setText(
+                            new StringBuilder(charSequence)
+                                    .insert(charSequence.length(), "/")
+                                    .toString()
+                    );
+                    binding.date.setSelection(binding.date.getText().length());
+                } else if (charSequence.length() == 10) {
+                    int day = Integer.parseInt(binding.date.getText().toString().substring(0, 2));
+                    int month = Integer.parseInt(binding.date.getText().toString().substring(3, 5)) - 1;
+                    int year = Integer.parseInt(binding.date.getText().toString().substring(6, 10)) - 1900;
+
+                    if (day > 31 || month > 12 - 1) {
+                        binding.info.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.info.setVisibility(View.GONE);
+                        dateTime = new Date(year, month, day);
+                        updateUI();
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    private void updateUI() {
+        String title = binding.title.getText().toString();
+        String category = binding.category.getText().toString();
+        String bigValue = binding.value.getText().toString();
+        String dateTime = binding.date.getText().toString();
+
+        if (!title.isEmpty() && !category.isEmpty() && !bigValue.toString().isEmpty() && !dateTime.toString().isEmpty()) {
+            binding.addTransaction.setVisibility(View.VISIBLE);
+        } else {
+            binding.addTransaction.setVisibility(View.GONE);
+        }
+    }
+
     private void clearInput() {
         binding.title.setText("");
         binding.category.setText("");
         binding.value.setText("");
         binding.date.setText("");
-        binding.addTransaction.setVisibility(View.VISIBLE);
+        binding.addTransaction.setVisibility(View.GONE);
         changeColor(green);
     }
 
