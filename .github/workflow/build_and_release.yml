@@ -22,7 +22,8 @@ jobs:
       - name: Show JDK Path
         run: |
           echo "JAVA_HOME is $JAVA_HOME"
-
+          export
+          
       - name: Build with Gradle
         run: |
           ./gradlew assembleDebug
