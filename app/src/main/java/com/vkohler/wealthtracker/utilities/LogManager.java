@@ -47,6 +47,7 @@ public class LogManager {
                             preferenceManager.putString(Constants.KEY_USERNAME, documentSnapshot.getString(Constants.KEY_USERNAME));
                             preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
                             preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD));
+                            preferenceManager.putString(Constants.KEY_BALANCE, documentSnapshot.getString(Constants.KEY_BALANCE));
                             preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, true);
                             preferenceManager.putString(Constants.KEY_LAST_ACTIVITY, "home");
 
