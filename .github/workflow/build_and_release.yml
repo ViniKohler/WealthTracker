@@ -19,6 +19,10 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
 
+      - name: Show JDK Path
+        run: |
+          echo "JAVA_HOME is $JAVA_HOME"
+
       - name: Build with Gradle
         run: |
           ./gradlew assembleDebug
