@@ -6,24 +6,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.vkohler.wealthtracker.R;
 import com.vkohler.wealthtracker.databinding.FragmentBalanceBinding;
-import com.vkohler.wealthtracker.interfaces.TransactionManagerCallback;
-import com.vkohler.wealthtracker.models.Transaction;
 import com.vkohler.wealthtracker.utilities.Constants;
 import com.vkohler.wealthtracker.utilities.PreferenceManager;
 import com.vkohler.wealthtracker.utilities.TransactionManager;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BalanceFragment extends Fragment {
 
@@ -59,45 +52,19 @@ public class BalanceFragment extends Fragment {
     }
 
     private void updateValues() {
-        List<Transaction> list = new ArrayList<>();
-        transactionManager.getTransactions(new TransactionManagerCallback() {
-
-            @Override
-            public void onTransactionsLoaded(List<Transaction> transactions) {
-                list.clear();
-                list.addAll(transactions);
-
-                BigDecimal total = new BigDecimal(BigInteger.ZERO);
-
-                if (list.size() != 0) {
-                    for (Transaction transaction : list) {
-
-                        BigDecimal value = new BigDecimal(transaction.getValue());
-
-                        total = total.add(value);
-                    }
-                }
-
-                if (binding != null) {
-
-                    DecimalFormat decimalFormat = new DecimalFormat("0.00");
-                    String strTotal = decimalFormat.format(total.abs());
-
-                    binding.balance.setText(strTotal);
-
-                    if (total.compareTo(BigDecimal.ZERO) < 0) { // if total < 0
-                        binding.visibility.setBackgroundTintList(red);
-                        binding.eye.setImageTintList(red);
-                        binding.currency.setText("-$ ");
-                    }
-                }
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+        BigDecimal currentBalance = new BigDecimal(preferenceManager.getString(Constants.KEY_BALANCE));
+        String strBalance = currentBalance.toString();
+        if (currentBalance.intValue() >= 0) {
+            binding.balance.setText(strBalance);
+            binding.eye.setImageTintList(green);
+            binding.visibility.setBackgroundTintList(green);
+            binding.currency.setText("$ ");
+        } else {
+            binding.balance.setText(strBalance.replace("-", ""));
+            binding.eye.setImageTintList(red);
+            binding.visibility.setBackgroundTintList(red);
+            binding.currency.setText("-$ ");
+        }
     }
 
     private void setListeners() {
@@ -116,7 +83,7 @@ public class BalanceFragment extends Fragment {
             preferenceManager.putBoolean(Constants.KEY_IS_BALANCE_VISIBLE, false);
         } else {
             String balance = preferenceManager.getString(Constants.KEY_BALANCE);
-            if (!balance.contains("-")) {
+            if (new BigDecimal(balance).intValue() >= 0) {
                 binding.visibility.setBackgroundTintList(green);
                 binding.eye.setImageTintList(green);
                 binding.balance.setText(preferenceManager.getString(Constants.KEY_BALANCE));
